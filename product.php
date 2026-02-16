@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/includes/config.php';
 require_once __DIR__ . '/includes/products.php';
+require_once __DIR__ . '/includes/shipping.php';
 
 $siteConfig = getSiteConfig();
 $productId = isset($_GET['id']) ? (int) $_GET['id'] : 0;
@@ -14,6 +15,14 @@ if (!$product) {
     require_once __DIR__ . '/includes/footer.php';
     exit;
 }
+
+$shipping = getShippingSettings();
+$insideDhakaCharge = (float) ($shipping['inside_dhaka_charge_bdt'] ?? 70);
+$outsideDhakaCharge = (float) ($shipping['outside_dhaka_charge_bdt'] ?? 130);
+
+$offerPrice = isset($product['offer_price_bdt']) && (float) $product['offer_price_bdt'] > 0
+    ? (float) $product['offer_price_bdt']
+    : round((float) $product['price_bdt'] * 0.9, 0);
 
 $pageTitle = $product['title'] . ' | ' . $siteConfig['site_name'];
 require_once __DIR__ . '/includes/header.php';
@@ -41,7 +50,15 @@ require_once __DIR__ . '/includes/header.php';
 
         <article class="card">
             <h1><?php echo htmlspecialchars($product['title']); ?></h1>
-            <p class="price">৳<?php echo number_format((float) $product['price_bdt'], 0); ?></p>
+            <div class="price-highlight">
+                <p class="price current">Price: ৳<?php echo number_format((float) $product['price_bdt'], 0); ?></p>
+                <p class="offer-price">Offer: ৳<?php echo number_format($offerPrice, 0); ?></p>
+            </div>
+
+            <div class="product-actions">
+                <button class="buy-btn detail-buy-now" data-id="<?php echo (int) $product['id']; ?>" data-name="<?php echo htmlspecialchars($product['title']); ?>" data-price="<?php echo (float) $product['price_bdt']; ?>" type="button">Buy Now</button>
+                <button class="btn detail-order-now" data-id="<?php echo (int) $product['id']; ?>" data-name="<?php echo htmlspecialchars($product['title']); ?>" data-price="<?php echo (float) $product['price_bdt']; ?>" type="button">Order Now</button>
+            </div>
 
             <?php foreach ($product['description_paragraphs'] as $paragraph): ?>
                 <p><?php echo htmlspecialchars($paragraph); ?></p>
@@ -54,7 +71,6 @@ require_once __DIR__ . '/includes/header.php';
 
             <div class="product-actions">
                 <button class="icon-btn detail-add-cart" data-id="<?php echo (int) $product['id']; ?>" data-name="<?php echo htmlspecialchars($product['title']); ?>" data-price="<?php echo (float) $product['price_bdt']; ?>" type="button">🛒 Add to Cart</button>
-                <button class="buy-btn detail-buy-now" data-id="<?php echo (int) $product['id']; ?>" data-name="<?php echo htmlspecialchars($product['title']); ?>" data-price="<?php echo (float) $product['price_bdt']; ?>" type="button">Buy Now</button>
             </div>
         </article>
     </div>
@@ -84,12 +100,71 @@ require_once __DIR__ . '/includes/header.php';
     </div>
 </div>
 
+
+<div id="product-order-modal" class="modal" aria-hidden="true">
+    <div class="modal-card checkout-modal-card">
+        <div class="modal-header">
+            <h3>Place Your Order</h3>
+            <button type="button" id="product-close-order-modal" class="close-cart">×</button>
+        </div>
+        <div id="product-order-summary" class="order-summary"></div>
+        <form id="product-order-form" class="order-form">
+            <div class="grid two-col">
+                <div class="form-group"><label>Name *</label><input name="name" required></div>
+                <div class="form-group"><label>Phone *</label><input name="phone" required></div>
+            </div>
+            <div class="form-group"><label>Address *</label><textarea name="address" required></textarea></div>
+            <div class="form-group"><label>Email (optional)</label><input name="email" type="email"></div>
+            <div class="grid two-col">
+                <div class="form-group"><label>Size</label><select name="size" id="product-order-size"><option value="">Select size</option></select></div>
+                <div class="form-group"><label>Color</label><select name="color" id="product-order-color"><option value="">Select color</option></select></div>
+            </div>
+            <div class="form-group"><label>Delivery Area</label><select name="delivery_zone" id="product-delivery-zone"><option value="inside_dhaka">Inside Dhaka</option><option value="outside_dhaka">Outside Dhaka</option></select></div>
+            <div class="form-group"><label>Notes</label><textarea name="notes"></textarea></div>
+            <button class="btn" type="submit">Submit Order</button>
+        </form>
+    </div>
+</div>
+
+<div id="product-toast" class="toast" role="status" aria-live="polite"></div>
 <script>
 (() => {
     const slides = Array.from(document.querySelectorAll('.slide-image'));
     const thumbs = Array.from(document.querySelectorAll('.thumb'));
     let current = 0;
     let startX = 0;
+
+    const INSIDE_DHAKA = <?php echo (float) $insideDhakaCharge; ?>;
+    const OUTSIDE_DHAKA = <?php echo (float) $outsideDhakaCharge; ?>;
+
+    const modal = document.getElementById('product-order-modal');
+    const closeModalBtn = document.getElementById('product-close-order-modal');
+    const orderSummary = document.getElementById('product-order-summary');
+    const orderForm = document.getElementById('product-order-form');
+    const zone = document.getElementById('product-delivery-zone');
+    const sizeSelect = document.getElementById('product-order-size');
+    const colorSelect = document.getElementById('product-order-color');
+    const toast = document.getElementById('product-toast');
+
+    const productInfo = {
+        id: Number(<?php echo (int) $product['id']; ?>),
+        name: <?php echo json_encode($product['title']); ?>,
+        price: Number(<?php echo (float) $product['price_bdt']; ?>),
+        sizes: <?php echo json_encode(array_values($product['variations']['sizes'] ?? [])); ?>,
+        colors: <?php echo json_encode(array_values($product['variations']['colors'] ?? [])); ?>,
+    };
+
+    let currentOrderItems = [];
+
+    function track(eventName, params = {}) {
+        if (typeof window.fbq === 'function') window.fbq('trackCustom', eventName, params);
+    }
+
+    function showToast(message, type = 'success') {
+        toast.textContent = message;
+        toast.className = `toast show ${type}`;
+        setTimeout(() => { toast.className = 'toast'; }, 2400);
+    }
 
     function showSlide(index) {
         if (!slides.length) return;
@@ -108,49 +183,131 @@ require_once __DIR__ . '/includes/header.php';
     if (slideWrap) {
         slideWrap.addEventListener('touchstart', (e) => { startX = e.changedTouches[0].clientX; }, { passive: true });
         slideWrap.addEventListener('touchend', (e) => {
-            const endX = e.changedTouches[0].clientX;
-            const diff = endX - startX;
+            const diff = e.changedTouches[0].clientX - startX;
             if (Math.abs(diff) < 35) return;
             if (diff < 0) showSlide(current + 1); else showSlide(current - 1);
         }, { passive: true });
     }
 
-    function track(eventName, params = {}) { if (typeof window.fbq === 'function') window.fbq('trackCustom', eventName, params); }
-
     function getCart() {
         try {
             const cart = JSON.parse(localStorage.getItem('ch_cart') || '[]');
             return Array.isArray(cart) ? cart : [];
-        } catch (e) {
-            return [];
-        }
+        } catch (error) { return []; }
     }
 
     function setCart(cart) {
         localStorage.setItem('ch_cart', JSON.stringify(cart));
-        const count = cart.reduce((s, i) => s + Number(i.qty || 0), 0);
+        const count = cart.reduce((sum, item) => sum + Number(item.qty || 0), 0);
         document.getElementById('detail-cart-count').textContent = count;
     }
 
-    function addToCart(product, buyNow) {
+    function addToCart() {
         const cart = getCart();
-        const existing = cart.find((i) => Number(i.id) === Number(product.id));
+        const existing = cart.find((item) => Number(item.id) === productInfo.id);
         if (existing) existing.qty += 1;
-        else cart.push({ ...product, qty: 1 });
+        else cart.push({ id: productInfo.id, name: productInfo.name, price: productInfo.price, qty: 1 });
         setCart(cart);
-        track(buyNow ? 'BuyNowClick' : 'AddToCart', { product_id: product.id, value: product.price });
-        if (buyNow) window.location.href = 'checkout.php';
-        else alert('Product added to cart.');
+        showToast('Added to cart');
+        track('AddToCart', { product_id: productInfo.id, value: productInfo.price });
     }
 
-    const addBtn = document.querySelector('.detail-add-cart');
-    const buyBtn = document.querySelector('.detail-buy-now');
-    if (addBtn) addBtn.addEventListener('click', () => addToCart({ id: Number(addBtn.dataset.id), name: addBtn.dataset.name, price: Number(addBtn.dataset.price) }, false));
-    if (buyBtn) buyBtn.addEventListener('click', () => addToCart({ id: Number(buyBtn.dataset.id), name: buyBtn.dataset.name, price: Number(buyBtn.dataset.price) }, true));
+    function renderVariationOptions() {
+        const setSelect = (select, values, label) => {
+            select.innerHTML = `<option value="">Select ${label}</option>`;
+            if (!values.length) {
+                select.disabled = true;
+                return;
+            }
+            select.disabled = false;
+            values.forEach((value) => {
+                const option = document.createElement('option');
+                option.value = value;
+                option.textContent = value;
+                select.appendChild(option);
+            });
+        };
+
+        setSelect(sizeSelect, productInfo.sizes, 'size');
+        setSelect(colorSelect, productInfo.colors, 'color');
+    }
+
+    function renderOrderSummary() {
+        const subtotal = currentOrderItems.reduce((sum, item) => sum + (item.price * item.qty), 0);
+        const delivery = zone.value === 'outside_dhaka' ? OUTSIDE_DHAKA : INSIDE_DHAKA;
+        const total = subtotal + delivery;
+        const lines = currentOrderItems.map((item) => `<li>${item.name} × ${item.qty} = ৳${Math.round(item.price * item.qty)}</li>`).join('');
+        orderSummary.innerHTML = `<strong>Order Summary</strong><ul>${lines}</ul><p>Subtotal: ৳${Math.round(subtotal)}</p><p>Delivery: ৳${Math.round(delivery)}</p><p><strong>Total: ৳${Math.round(total)}</strong></p>`;
+    }
+
+    function openOrderModal(items) {
+        currentOrderItems = items.map((item) => ({ ...item }));
+        renderVariationOptions();
+        renderOrderSummary();
+        modal.classList.add('open');
+        modal.setAttribute('aria-hidden', 'false');
+        track('InitiateCheckout', { items: currentOrderItems.length });
+    }
+
+    function closeOrderModal() {
+        modal.classList.remove('open');
+        modal.setAttribute('aria-hidden', 'true');
+    }
+
+    zone.addEventListener('change', renderOrderSummary);
+    closeModalBtn.addEventListener('click', closeOrderModal);
+    modal.addEventListener('click', (event) => { if (event.target === modal) closeOrderModal(); });
+
+    document.querySelector('.detail-add-cart')?.addEventListener('click', addToCart);
+    document.querySelector('.detail-buy-now')?.addEventListener('click', () => {
+        openOrderModal([{ id: productInfo.id, name: productInfo.name, price: productInfo.price, qty: 1 }]);
+        track('BuyNowClick', { product_id: productInfo.id, value: productInfo.price });
+    });
+    document.querySelector('.detail-order-now')?.addEventListener('click', () => {
+        openOrderModal([{ id: productInfo.id, name: productInfo.name, price: productInfo.price, qty: 1 }]);
+    });
 
     document.getElementById('detail-go-checkout').addEventListener('click', () => {
-        track('InitiateCheckout', { source: 'product_page' });
-        window.location.href = 'checkout.php';
+        const cart = getCart();
+        if (!cart.length) {
+            showToast('Cart is empty', 'error');
+            return;
+        }
+        openOrderModal(cart.map((item) => ({ id: Number(item.id), name: item.name, price: Number(item.price), qty: Number(item.qty) })));
+    });
+
+    orderForm.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        if (!currentOrderItems.length) {
+            showToast('No products selected', 'error');
+            return;
+        }
+
+        const payload = Object.fromEntries(new FormData(orderForm).entries());
+        payload.cart_items = currentOrderItems.map((item) => ({ id: item.id, qty: item.qty }));
+
+        try {
+            const response = await fetch('submit_order.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload),
+            });
+            const data = await response.json();
+            if (!data.success) {
+                showToast(data.message || 'Failed to submit order', 'error');
+                return;
+            }
+            track('Purchase', { value: data.grand_total_bdt || 0, order_id: data.order_id || 0 });
+            showToast(`Order submitted (#${data.order_id})`);
+            closeOrderModal();
+            orderForm.reset();
+
+            const cart = getCart();
+            const usingAllCart = currentOrderItems.length === cart.length && currentOrderItems.every((item, idx) => cart[idx] && Number(cart[idx].id) === Number(item.id));
+            if (usingAllCart) setCart([]);
+        } catch (error) {
+            showToast('Network error, please try again', 'error');
+        }
     });
 
     setCart(getCart());

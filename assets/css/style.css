@@ -447,3 +447,67 @@ textarea { min-height: 110px; }
     padding: 0.32rem 0.55rem;
     font-size: 0.82rem;
 }
+
+
+.price-highlight {
+    background: #e9fff0;
+    border: 1px solid #cdeed9;
+    border-radius: 12px;
+    padding: 0.75rem;
+    margin: 0.6rem 0;
+}
+
+.price.current {
+    margin: 0;
+    font-size: 1.1rem;
+}
+
+.offer-price {
+    margin: 0.35rem 0 0;
+    color: #15803d;
+    font-weight: 800;
+    font-size: 1.15rem;
+}
+
+.checkout-modal-card {
+    width: min(720px, 96vw);
+}
+
+.toast {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    bottom: calc(20px + env(safe-area-inset-bottom));
+    background: #1f6a45;
+    color: #fff;
+    padding: 0.72rem 1rem;
+    border-radius: 10px;
+    box-shadow: 0 12px 26px rgba(14, 58, 37, 0.25);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 300;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    max-width: min(92vw, 420px);
+    text-align: center;
+    font-weight: 600;
+}
+
+.toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+.toast.error {
+    background: #b42318;
+}
+
+@media (max-width: 700px) {
+    .order-table {
+        min-width: 900px;
+    }
+
+    .checkout-modal-card {
+        width: 95vw;
+        padding: 0.85rem;
+    }
+}
