@@ -1,0 +1,5 @@
+{
+  "free_shipping_threshold_bdt": 1500,
+  "inside_dhaka_charge_bdt": 70,
+  "outside_dhaka_charge_bdt": 130
+}

@@ -1,0 +1,1365 @@
+[
+    {
+        "id": 1,
+        "title": "Wireless Earbuds Pro",
+        "price_bdt": 2200,
+        "cost_bdt": 1450,
+        "short_description": "Low-latency earbuds with ANC and charging case.",
+        "description_paragraphs": [
+            "These wireless earbuds are built for daily use, offering clear audio and stable Bluetooth connectivity for both music and calls.",
+            "The compact charging case provides all-day battery backup and supports quick charging for busy users.",
+            "A premium matte finish with ergonomic ear tips ensures comfort during long listening sessions."
+        ],
+        "images": [
+            "https://picsum.photos/seed/earbud-main/800/500",
+            "https://picsum.photos/seed/earbud-side/800/500",
+            "https://picsum.photos/seed/earbud-case/800/500"
+        ],
+        "detail_images": [
+            {
+                "url": "https://picsum.photos/seed/earbud-detail1/700/450",
+                "caption": "Noise-canceling dual microphones"
+            },
+            {
+                "url": "https://picsum.photos/seed/earbud-detail2/700/450",
+                "caption": "Pocket-size magnetic charging case"
+            }
+        ],
+        "variations": {
+            "colors": [
+                "Black",
+                "White",
+                "Navy"
+            ],
+            "sizes": [
+                "Standard"
+            ]
+        }
+    },
+    {
+        "id": 2,
+        "title": "Trending Product 2",
+        "price_bdt": 690,
+        "cost_bdt": 420,
+        "short_description": "Quality checked sourcing item for retail and wholesale clients.",
+        "description_paragraphs": [
+            "Reliable product sourced from trusted suppliers in China.",
+            "Suitable for eCommerce, retail shelves, and gift packaging.",
+            "Flexible MOQ available depending on sourcing plan."
+        ],
+        "images": [
+            "https://picsum.photos/seed/china-product-2/800/500",
+            "https://picsum.photos/seed/china-product-2-2/800/500"
+        ],
+        "detail_images": [
+            {
+                "url": "https://picsum.photos/seed/china-product-detail-2/700/450",
+                "caption": "Close-up product quality shot"
+            }
+        ],
+        "variations": {
+            "colors": [
+                "Red",
+                "Blue",
+                "Black"
+            ],
+            "sizes": [
+                "S",
+                "M",
+                "L"
+            ]
+        }
+    },
+    {
+        "id": 3,
+        "title": "Trending Product 3",
+        "price_bdt": 785,
+        "cost_bdt": 480,
+        "short_description": "Quality checked sourcing item for retail and wholesale clients.",
+        "description_paragraphs": [
+            "Reliable product sourced from trusted suppliers in China.",
+            "Suitable for eCommerce, retail shelves, and gift packaging.",
+            "Flexible MOQ available depending on sourcing plan."
+        ],
+        "images": [
+            "https://picsum.photos/seed/china-product-3/800/500",
+            "https://picsum.photos/seed/china-product-3-2/800/500"
+        ],
+        "detail_images": [
+            {
+                "url": "https://picsum.photos/seed/china-product-detail-3/700/450",
+                "caption": "Close-up product quality shot"
+            }
+        ],
+        "variations": {
+            "colors": [
+                "Red",
+                "Blue",
+                "Black"
+            ],
+            "sizes": [
+                "S",
+                "M",
+                "L"
+            ]
+        }
+    },
+    {
+        "id": 4,
+        "title": "Trending Product 4",
+        "price_bdt": 880,
+        "cost_bdt": 540,
+        "short_description": "Quality checked sourcing item for retail and wholesale clients.",
+        "description_paragraphs": [
+            "Reliable product sourced from trusted suppliers in China.",
+            "Suitable for eCommerce, retail shelves, and gift packaging.",
+            "Flexible MOQ available depending on sourcing plan."
+        ],
+        "images": [
+            "https://picsum.photos/seed/china-product-4/800/500",
+            "https://picsum.photos/seed/china-product-4-2/800/500"
+        ],
+        "detail_images": [
+            {
+                "url": "https://picsum.photos/seed/china-product-detail-4/700/450",
+                "caption": "Close-up product quality shot"
+            }
+        ],
+        "variations": {
+            "colors": [
+                "Red",
+                "Blue",
+                "Black"
+            ],
+            "sizes": [
+                "S",
+                "M",
+                "L"
+            ]
+        }
+    },
+    {
+        "id": 5,
+        "title": "Trending Product 5",
+        "price_bdt": 975,
+        "cost_bdt": 600,
+        "short_description": "Quality checked sourcing item for retail and wholesale clients.",
+        "description_paragraphs": [
+            "Reliable product sourced from trusted suppliers in China.",
+            "Suitable for eCommerce, retail shelves, and gift packaging.",
+            "Flexible MOQ available depending on sourcing plan."
+        ],
+        "images": [
+            "https://picsum.photos/seed/china-product-5/800/500",
+            "https://picsum.photos/seed/china-product-5-2/800/500"
+        ],
+        "detail_images": [
+            {
+                "url": "https://picsum.photos/seed/china-product-detail-5/700/450",
+                "caption": "Close-up product quality shot"
+            }
+        ],
+        "variations": {
+            "colors": [
+                "Red",
+                "Blue",
+                "Black"
+            ],
+            "sizes": [
+                "S",
+                "M",
+                "L"
+            ]
+        }
+    },
+    {
+        "id": 6,
+        "title": "Trending Product 6",
+        "price_bdt": 1070,
+        "cost_bdt": 660,
+        "short_description": "Quality checked sourcing item for retail and wholesale clients.",
+        "description_paragraphs": [
+            "Reliable product sourced from trusted suppliers in China.",
+            "Suitable for eCommerce, retail shelves, and gift packaging.",
+            "Flexible MOQ available depending on sourcing plan."
+        ],
+        "images": [
+            "https://picsum.photos/seed/china-product-6/800/500",
+            "https://picsum.photos/seed/china-product-6-2/800/500"
+        ],
+        "detail_images": [
+            {
+                "url": "https://picsum.photos/seed/china-product-detail-6/700/450",
+                "caption": "Close-up product quality shot"
+            }
+        ],
+        "variations": {
+            "colors": [
+                "Red",
+                "Blue",
+                "Black"
+            ],
+            "sizes": [
+                "S",
+                "M",
+                "L"
+            ]
+        }
+    },
+    {
+        "id": 7,
+        "title": "Trending Product 7",
+        "price_bdt": 1165,
+        "cost_bdt": 720,
+        "short_description": "Quality checked sourcing item for retail and wholesale clients.",
+        "description_paragraphs": [
+            "Reliable product sourced from trusted suppliers in China.",
+            "Suitable for eCommerce, retail shelves, and gift packaging.",
+            "Flexible MOQ available depending on sourcing plan."
+        ],
+        "images": [
+            "https://picsum.photos/seed/china-product-7/800/500",
+            "https://picsum.photos/seed/china-product-7-2/800/500"
+        ],
+        "detail_images": [
+            {
+                "url": "https://picsum.photos/seed/china-product-detail-7/700/450",
+                "caption": "Close-up product quality shot"
+            }
+        ],
+        "variations": {
+            "colors": [
+                "Red",
+                "Blue",
+                "Black"
+            ],
+            "sizes": [
+                "S",
+                "M",
+                "L"
+            ]
+        }
+    },
+    {
+        "id": 8,
+        "title": "Trending Product 8",
+        "price_bdt": 1260,
+        "cost_bdt": 780,
+        "short_description": "Quality checked sourcing item for retail and wholesale clients.",
+        "description_paragraphs": [
+            "Reliable product sourced from trusted suppliers in China.",
+            "Suitable for eCommerce, retail shelves, and gift packaging.",
+            "Flexible MOQ available depending on sourcing plan."
+        ],
+        "images": [
+            "https://picsum.photos/seed/china-product-8/800/500",
+            "https://picsum.photos/seed/china-product-8-2/800/500"
+        ],
+        "detail_images": [
+            {
+                "url": "https://picsum.photos/seed/china-product-detail-8/700/450",
+                "caption": "Close-up product quality shot"
+            }
+        ],
+        "variations": {
+            "colors": [
+                "Red",
+                "Blue",
+                "Black"
+            ],
+            "sizes": [
+                "S",
+                "M",
+                "L"
+            ]
+        }
+    },
+    {
+        "id": 9,
+        "title": "Trending Product 9",
+        "price_bdt": 1355,
+        "cost_bdt": 840,
+        "short_description": "Quality checked sourcing item for retail and wholesale clients.",
+        "description_paragraphs": [
+            "Reliable product sourced from trusted suppliers in China.",
+            "Suitable for eCommerce, retail shelves, and gift packaging.",
+            "Flexible MOQ available depending on sourcing plan."
+        ],
+        "images": [
+            "https://picsum.photos/seed/china-product-9/800/500",
+            "https://picsum.photos/seed/china-product-9-2/800/500"
+        ],
+        "detail_images": [
+            {
+                "url": "https://picsum.photos/seed/china-product-detail-9/700/450",
+                "caption": "Close-up product quality shot"
+            }
+        ],
+        "variations": {
+            "colors": [
+                "Red",
+                "Blue",
+                "Black"
+            ],
+            "sizes": [
+                "S",
+                "M",
+                "L"
+            ]
+        }
+    },
+    {
+        "id": 10,
+        "title": "Trending Product 10",
+        "price_bdt": 1450,
+        "cost_bdt": 900,
+        "short_description": "Quality checked sourcing item for retail and wholesale clients.",
+        "description_paragraphs": [
+            "Reliable product sourced from trusted suppliers in China.",
+            "Suitable for eCommerce, retail shelves, and gift packaging.",
+            "Flexible MOQ available depending on sourcing plan."
+        ],
+        "images": [
+            "https://picsum.photos/seed/china-product-10/800/500",
+            "https://picsum.photos/seed/china-product-10-2/800/500"
+        ],
+        "detail_images": [
+            {
+                "url": "https://picsum.photos/seed/china-product-detail-10/700/450",
+                "caption": "Close-up product quality shot"
+            }
+        ],
+        "variations": {
+            "colors": [
+                "Red",
+                "Blue",
+                "Black"
+            ],
+            "sizes": [
+                "S",
+                "M",
+                "L"
+            ]
+        }
+    },
+    {
+        "id": 11,
+        "title": "Trending Product 11",
+        "price_bdt": 1545,
+        "cost_bdt": 960,
+        "short_description": "Quality checked sourcing item for retail and wholesale clients.",
+        "description_paragraphs": [
+            "Reliable product sourced from trusted suppliers in China.",
+            "Suitable for eCommerce, retail shelves, and gift packaging.",
+            "Flexible MOQ available depending on sourcing plan."
+        ],
+        "images": [
+            "https://picsum.photos/seed/china-product-11/800/500",
+            "https://picsum.photos/seed/china-product-11-2/800/500"
+        ],
+        "detail_images": [
+            {
+                "url": "https://picsum.photos/seed/china-product-detail-11/700/450",
+                "caption": "Close-up product quality shot"
+            }
+        ],
+        "variations": {
+            "colors": [
+                "Red",
+                "Blue",
+                "Black"
+            ],
+            "sizes": [
+                "S",
+                "M",
+                "L"
+            ]
+        }
+    },
+    {
+        "id": 12,
+        "title": "Trending Product 12",
+        "price_bdt": 1640,
+        "cost_bdt": 1020,
+        "short_description": "Quality checked sourcing item for retail and wholesale clients.",
+        "description_paragraphs": [
+            "Reliable product sourced from trusted suppliers in China.",
+            "Suitable for eCommerce, retail shelves, and gift packaging.",
+            "Flexible MOQ available depending on sourcing plan."
+        ],
+        "images": [
+            "https://picsum.photos/seed/china-product-12/800/500",
+            "https://picsum.photos/seed/china-product-12-2/800/500"
+        ],
+        "detail_images": [
+            {
+                "url": "https://picsum.photos/seed/china-product-detail-12/700/450",
+                "caption": "Close-up product quality shot"
+            }
+        ],
+        "variations": {
+            "colors": [
+                "Red",
+                "Blue",
+                "Black"
+            ],
+            "sizes": [
+                "S",
+                "M",
+                "L"
+            ]
+        }
+    },
+    {
+        "id": 13,
+        "title": "Trending Product 13",
+        "price_bdt": 1735,
+        "cost_bdt": 1080,
+        "short_description": "Quality checked sourcing item for retail and wholesale clients.",
+        "description_paragraphs": [
+            "Reliable product sourced from trusted suppliers in China.",
+            "Suitable for eCommerce, retail shelves, and gift packaging.",
+            "Flexible MOQ available depending on sourcing plan."
+        ],
+        "images": [
+            "https://picsum.photos/seed/china-product-13/800/500",
+            "https://picsum.photos/seed/china-product-13-2/800/500"
+        ],
+        "detail_images": [
+            {
+                "url": "https://picsum.photos/seed/china-product-detail-13/700/450",
+                "caption": "Close-up product quality shot"
+            }
+        ],
+        "variations": {
+            "colors": [
+                "Red",
+                "Blue",
+                "Black"
+            ],
+            "sizes": [
+                "S",
+                "M",
+                "L"
+            ]
+        }
+    },
+    {
+        "id": 14,
+        "title": "Trending Product 14",
+        "price_bdt": 1830,
+        "cost_bdt": 1140,
+        "short_description": "Quality checked sourcing item for retail and wholesale clients.",
+        "description_paragraphs": [
+            "Reliable product sourced from trusted suppliers in China.",
+            "Suitable for eCommerce, retail shelves, and gift packaging.",
+            "Flexible MOQ available depending on sourcing plan."
+        ],
+        "images": [
+            "https://picsum.photos/seed/china-product-14/800/500",
+            "https://picsum.photos/seed/china-product-14-2/800/500"
+        ],
+        "detail_images": [
+            {
+                "url": "https://picsum.photos/seed/china-product-detail-14/700/450",
+                "caption": "Close-up product quality shot"
+            }
+        ],
+        "variations": {
+            "colors": [
+                "Red",
+                "Blue",
+                "Black"
+            ],
+            "sizes": [
+                "S",
+                "M",
+                "L"
+            ]
+        }
+    },
+    {
+        "id": 15,
+        "title": "Trending Product 15",
+        "price_bdt": 1925,
+        "cost_bdt": 1200,
+        "short_description": "Quality checked sourcing item for retail and wholesale clients.",
+        "description_paragraphs": [
+            "Reliable product sourced from trusted suppliers in China.",
+            "Suitable for eCommerce, retail shelves, and gift packaging.",
+            "Flexible MOQ available depending on sourcing plan."
+        ],
+        "images": [
+            "https://picsum.photos/seed/china-product-15/800/500",
+            "https://picsum.photos/seed/china-product-15-2/800/500"
+        ],
+        "detail_images": [
+            {
+                "url": "https://picsum.photos/seed/china-product-detail-15/700/450",
+                "caption": "Close-up product quality shot"
+            }
+        ],
+        "variations": {
+            "colors": [
+                "Red",
+                "Blue",
+                "Black"
+            ],
+            "sizes": [
+                "S",
+                "M",
+                "L"
+            ]
+        }
+    },
+    {
+        "id": 16,
+        "title": "Trending Product 16",
+        "price_bdt": 2020,
+        "cost_bdt": 1260,
+        "short_description": "Quality checked sourcing item for retail and wholesale clients.",
+        "description_paragraphs": [
+            "Reliable product sourced from trusted suppliers in China.",
+            "Suitable for eCommerce, retail shelves, and gift packaging.",
+            "Flexible MOQ available depending on sourcing plan."
+        ],
+        "images": [
+            "https://picsum.photos/seed/china-product-16/800/500",
+            "https://picsum.photos/seed/china-product-16-2/800/500"
+        ],
+        "detail_images": [
+            {
+                "url": "https://picsum.photos/seed/china-product-detail-16/700/450",
+                "caption": "Close-up product quality shot"
+            }
+        ],
+        "variations": {
+            "colors": [
+                "Red",
+                "Blue",
+                "Black"
+            ],
+            "sizes": [
+                "S",
+                "M",
+                "L"
+            ]
+        }
+    },
+    {
+        "id": 17,
+        "title": "Trending Product 17",
+        "price_bdt": 2115,
+        "cost_bdt": 1320,
+        "short_description": "Quality checked sourcing item for retail and wholesale clients.",
+        "description_paragraphs": [
+            "Reliable product sourced from trusted suppliers in China.",
+            "Suitable for eCommerce, retail shelves, and gift packaging.",
+            "Flexible MOQ available depending on sourcing plan."
+        ],
+        "images": [
+            "https://picsum.photos/seed/china-product-17/800/500",
+            "https://picsum.photos/seed/china-product-17-2/800/500"
+        ],
+        "detail_images": [
+            {
+                "url": "https://picsum.photos/seed/china-product-detail-17/700/450",
+                "caption": "Close-up product quality shot"
+            }
+        ],
+        "variations": {
+            "colors": [
+                "Red",
+                "Blue",
+                "Black"
+            ],
+            "sizes": [
+                "S",
+                "M",
+                "L"
+            ]
+        }
+    },
+    {
+        "id": 18,
+        "title": "Trending Product 18",
+        "price_bdt": 2210,
+        "cost_bdt": 1380,
+        "short_description": "Quality checked sourcing item for retail and wholesale clients.",
+        "description_paragraphs": [
+            "Reliable product sourced from trusted suppliers in China.",
+            "Suitable for eCommerce, retail shelves, and gift packaging.",
+            "Flexible MOQ available depending on sourcing plan."
+        ],
+        "images": [
+            "https://picsum.photos/seed/china-product-18/800/500",
+            "https://picsum.photos/seed/china-product-18-2/800/500"
+        ],
+        "detail_images": [
+            {
+                "url": "https://picsum.photos/seed/china-product-detail-18/700/450",
+                "caption": "Close-up product quality shot"
+            }
+        ],
+        "variations": {
+            "colors": [
+                "Red",
+                "Blue",
+                "Black"
+            ],
+            "sizes": [
+                "S",
+                "M",
+                "L"
+            ]
+        }
+    },
+    {
+        "id": 19,
+        "title": "Trending Product 19",
+        "price_bdt": 2305,
+        "cost_bdt": 1440,
+        "short_description": "Quality checked sourcing item for retail and wholesale clients.",
+        "description_paragraphs": [
+            "Reliable product sourced from trusted suppliers in China.",
+            "Suitable for eCommerce, retail shelves, and gift packaging.",
+            "Flexible MOQ available depending on sourcing plan."
+        ],
+        "images": [
+            "https://picsum.photos/seed/china-product-19/800/500",
+            "https://picsum.photos/seed/china-product-19-2/800/500"
+        ],
+        "detail_images": [
+            {
+                "url": "https://picsum.photos/seed/china-product-detail-19/700/450",
+                "caption": "Close-up product quality shot"
+            }
+        ],
+        "variations": {
+            "colors": [
+                "Red",
+                "Blue",
+                "Black"
+            ],
+            "sizes": [
+                "S",
+                "M",
+                "L"
+            ]
+        }
+    },
+    {
+        "id": 20,
+        "title": "Trending Product 20",
+        "price_bdt": 2400,
+        "cost_bdt": 1500,
+        "short_description": "Quality checked sourcing item for retail and wholesale clients.",
+        "description_paragraphs": [
+            "Reliable product sourced from trusted suppliers in China.",
+            "Suitable for eCommerce, retail shelves, and gift packaging.",
+            "Flexible MOQ available depending on sourcing plan."
+        ],
+        "images": [
+            "https://picsum.photos/seed/china-product-20/800/500",
+            "https://picsum.photos/seed/china-product-20-2/800/500"
+        ],
+        "detail_images": [
+            {
+                "url": "https://picsum.photos/seed/china-product-detail-20/700/450",
+                "caption": "Close-up product quality shot"
+            }
+        ],
+        "variations": {
+            "colors": [
+                "Red",
+                "Blue",
+                "Black"
+            ],
+            "sizes": [
+                "S",
+                "M",
+                "L"
+            ]
+        }
+    },
+    {
+        "id": 21,
+        "title": "Trending Product 21",
+        "price_bdt": 2495,
+        "cost_bdt": 1560,
+        "short_description": "Quality checked sourcing item for retail and wholesale clients.",
+        "description_paragraphs": [
+            "Reliable product sourced from trusted suppliers in China.",
+            "Suitable for eCommerce, retail shelves, and gift packaging.",
+            "Flexible MOQ available depending on sourcing plan."
+        ],
+        "images": [
+            "https://picsum.photos/seed/china-product-21/800/500",
+            "https://picsum.photos/seed/china-product-21-2/800/500"
+        ],
+        "detail_images": [
+            {
+                "url": "https://picsum.photos/seed/china-product-detail-21/700/450",
+                "caption": "Close-up product quality shot"
+            }
+        ],
+        "variations": {
+            "colors": [
+                "Red",
+                "Blue",
+                "Black"
+            ],
+            "sizes": [
+                "S",
+                "M",
+                "L"
+            ]
+        }
+    },
+    {
+        "id": 22,
+        "title": "Trending Product 22",
+        "price_bdt": 2590,
+        "cost_bdt": 1620,
+        "short_description": "Quality checked sourcing item for retail and wholesale clients.",
+        "description_paragraphs": [
+            "Reliable product sourced from trusted suppliers in China.",
+            "Suitable for eCommerce, retail shelves, and gift packaging.",
+            "Flexible MOQ available depending on sourcing plan."
+        ],
+        "images": [
+            "https://picsum.photos/seed/china-product-22/800/500",
+            "https://picsum.photos/seed/china-product-22-2/800/500"
+        ],
+        "detail_images": [
+            {
+                "url": "https://picsum.photos/seed/china-product-detail-22/700/450",
+                "caption": "Close-up product quality shot"
+            }
+        ],
+        "variations": {
+            "colors": [
+                "Red",
+                "Blue",
+                "Black"
+            ],
+            "sizes": [
+                "S",
+                "M",
+                "L"
+            ]
+        }
+    },
+    {
+        "id": 23,
+        "title": "Trending Product 23",
+        "price_bdt": 2685,
+        "cost_bdt": 1680,
+        "short_description": "Quality checked sourcing item for retail and wholesale clients.",
+        "description_paragraphs": [
+            "Reliable product sourced from trusted suppliers in China.",
+            "Suitable for eCommerce, retail shelves, and gift packaging.",
+            "Flexible MOQ available depending on sourcing plan."
+        ],
+        "images": [
+            "https://picsum.photos/seed/china-product-23/800/500",
+            "https://picsum.photos/seed/china-product-23-2/800/500"
+        ],
+        "detail_images": [
+            {
+                "url": "https://picsum.photos/seed/china-product-detail-23/700/450",
+                "caption": "Close-up product quality shot"
+            }
+        ],
+        "variations": {
+            "colors": [
+                "Red",
+                "Blue",
+                "Black"
+            ],
+            "sizes": [
+                "S",
+                "M",
+                "L"
+            ]
+        }
+    },
+    {
+        "id": 24,
+        "title": "Trending Product 24",
+        "price_bdt": 2780,
+        "cost_bdt": 1740,
+        "short_description": "Quality checked sourcing item for retail and wholesale clients.",
+        "description_paragraphs": [
+            "Reliable product sourced from trusted suppliers in China.",
+            "Suitable for eCommerce, retail shelves, and gift packaging.",
+            "Flexible MOQ available depending on sourcing plan."
+        ],
+        "images": [
+            "https://picsum.photos/seed/china-product-24/800/500",
+            "https://picsum.photos/seed/china-product-24-2/800/500"
+        ],
+        "detail_images": [
+            {
+                "url": "https://picsum.photos/seed/china-product-detail-24/700/450",
+                "caption": "Close-up product quality shot"
+            }
+        ],
+        "variations": {
+            "colors": [
+                "Red",
+                "Blue",
+                "Black"
+            ],
+            "sizes": [
+                "S",
+                "M",
+                "L"
+            ]
+        }
+    },
+    {
+        "id": 25,
+        "title": "Trending Product 25",
+        "price_bdt": 2875,
+        "cost_bdt": 1800,
+        "short_description": "Quality checked sourcing item for retail and wholesale clients.",
+        "description_paragraphs": [
+            "Reliable product sourced from trusted suppliers in China.",
+            "Suitable for eCommerce, retail shelves, and gift packaging.",
+            "Flexible MOQ available depending on sourcing plan."
+        ],
+        "images": [
+            "https://picsum.photos/seed/china-product-25/800/500",
+            "https://picsum.photos/seed/china-product-25-2/800/500"
+        ],
+        "detail_images": [
+            {
+                "url": "https://picsum.photos/seed/china-product-detail-25/700/450",
+                "caption": "Close-up product quality shot"
+            }
+        ],
+        "variations": {
+            "colors": [
+                "Red",
+                "Blue",
+                "Black"
+            ],
+            "sizes": [
+                "S",
+                "M",
+                "L"
+            ]
+        }
+    },
+    {
+        "id": 26,
+        "title": "Trending Product 26",
+        "price_bdt": 2970,
+        "cost_bdt": 1860,
+        "short_description": "Quality checked sourcing item for retail and wholesale clients.",
+        "description_paragraphs": [
+            "Reliable product sourced from trusted suppliers in China.",
+            "Suitable for eCommerce, retail shelves, and gift packaging.",
+            "Flexible MOQ available depending on sourcing plan."
+        ],
+        "images": [
+            "https://picsum.photos/seed/china-product-26/800/500",
+            "https://picsum.photos/seed/china-product-26-2/800/500"
+        ],
+        "detail_images": [
+            {
+                "url": "https://picsum.photos/seed/china-product-detail-26/700/450",
+                "caption": "Close-up product quality shot"
+            }
+        ],
+        "variations": {
+            "colors": [
+                "Red",
+                "Blue",
+                "Black"
+            ],
+            "sizes": [
+                "S",
+                "M",
+                "L"
+            ]
+        }
+    },
+    {
+        "id": 27,
+        "title": "Trending Product 27",
+        "price_bdt": 3065,
+        "cost_bdt": 1920,
+        "short_description": "Quality checked sourcing item for retail and wholesale clients.",
+        "description_paragraphs": [
+            "Reliable product sourced from trusted suppliers in China.",
+            "Suitable for eCommerce, retail shelves, and gift packaging.",
+            "Flexible MOQ available depending on sourcing plan."
+        ],
+        "images": [
+            "https://picsum.photos/seed/china-product-27/800/500",
+            "https://picsum.photos/seed/china-product-27-2/800/500"
+        ],
+        "detail_images": [
+            {
+                "url": "https://picsum.photos/seed/china-product-detail-27/700/450",
+                "caption": "Close-up product quality shot"
+            }
+        ],
+        "variations": {
+            "colors": [
+                "Red",
+                "Blue",
+                "Black"
+            ],
+            "sizes": [
+                "S",
+                "M",
+                "L"
+            ]
+        }
+    },
+    {
+        "id": 28,
+        "title": "Trending Product 28",
+        "price_bdt": 3160,
+        "cost_bdt": 1980,
+        "short_description": "Quality checked sourcing item for retail and wholesale clients.",
+        "description_paragraphs": [
+            "Reliable product sourced from trusted suppliers in China.",
+            "Suitable for eCommerce, retail shelves, and gift packaging.",
+            "Flexible MOQ available depending on sourcing plan."
+        ],
+        "images": [
+            "https://picsum.photos/seed/china-product-28/800/500",
+            "https://picsum.photos/seed/china-product-28-2/800/500"
+        ],
+        "detail_images": [
+            {
+                "url": "https://picsum.photos/seed/china-product-detail-28/700/450",
+                "caption": "Close-up product quality shot"
+            }
+        ],
+        "variations": {
+            "colors": [
+                "Red",
+                "Blue",
+                "Black"
+            ],
+            "sizes": [
+                "S",
+                "M",
+                "L"
+            ]
+        }
+    },
+    {
+        "id": 29,
+        "title": "Trending Product 29",
+        "price_bdt": 3255,
+        "cost_bdt": 2040,
+        "short_description": "Quality checked sourcing item for retail and wholesale clients.",
+        "description_paragraphs": [
+            "Reliable product sourced from trusted suppliers in China.",
+            "Suitable for eCommerce, retail shelves, and gift packaging.",
+            "Flexible MOQ available depending on sourcing plan."
+        ],
+        "images": [
+            "https://picsum.photos/seed/china-product-29/800/500",
+            "https://picsum.photos/seed/china-product-29-2/800/500"
+        ],
+        "detail_images": [
+            {
+                "url": "https://picsum.photos/seed/china-product-detail-29/700/450",
+                "caption": "Close-up product quality shot"
+            }
+        ],
+        "variations": {
+            "colors": [
+                "Red",
+                "Blue",
+                "Black"
+            ],
+            "sizes": [
+                "S",
+                "M",
+                "L"
+            ]
+        }
+    },
+    {
+        "id": 30,
+        "title": "Trending Product 30",
+        "price_bdt": 3350,
+        "cost_bdt": 2100,
+        "short_description": "Quality checked sourcing item for retail and wholesale clients.",
+        "description_paragraphs": [
+            "Reliable product sourced from trusted suppliers in China.",
+            "Suitable for eCommerce, retail shelves, and gift packaging.",
+            "Flexible MOQ available depending on sourcing plan."
+        ],
+        "images": [
+            "https://picsum.photos/seed/china-product-30/800/500",
+            "https://picsum.photos/seed/china-product-30-2/800/500"
+        ],
+        "detail_images": [
+            {
+                "url": "https://picsum.photos/seed/china-product-detail-30/700/450",
+                "caption": "Close-up product quality shot"
+            }
+        ],
+        "variations": {
+            "colors": [
+                "Red",
+                "Blue",
+                "Black"
+            ],
+            "sizes": [
+                "S",
+                "M",
+                "L"
+            ]
+        }
+    },
+    {
+        "id": 31,
+        "title": "Trending Product 31",
+        "price_bdt": 3445,
+        "cost_bdt": 2160,
+        "short_description": "Quality checked sourcing item for retail and wholesale clients.",
+        "description_paragraphs": [
+            "Reliable product sourced from trusted suppliers in China.",
+            "Suitable for eCommerce, retail shelves, and gift packaging.",
+            "Flexible MOQ available depending on sourcing plan."
+        ],
+        "images": [
+            "https://picsum.photos/seed/china-product-31/800/500",
+            "https://picsum.photos/seed/china-product-31-2/800/500"
+        ],
+        "detail_images": [
+            {
+                "url": "https://picsum.photos/seed/china-product-detail-31/700/450",
+                "caption": "Close-up product quality shot"
+            }
+        ],
+        "variations": {
+            "colors": [
+                "Red",
+                "Blue",
+                "Black"
+            ],
+            "sizes": [
+                "S",
+                "M",
+                "L"
+            ]
+        }
+    },
+    {
+        "id": 32,
+        "title": "Trending Product 32",
+        "price_bdt": 3540,
+        "cost_bdt": 2220,
+        "short_description": "Quality checked sourcing item for retail and wholesale clients.",
+        "description_paragraphs": [
+            "Reliable product sourced from trusted suppliers in China.",
+            "Suitable for eCommerce, retail shelves, and gift packaging.",
+            "Flexible MOQ available depending on sourcing plan."
+        ],
+        "images": [
+            "https://picsum.photos/seed/china-product-32/800/500",
+            "https://picsum.photos/seed/china-product-32-2/800/500"
+        ],
+        "detail_images": [
+            {
+                "url": "https://picsum.photos/seed/china-product-detail-32/700/450",
+                "caption": "Close-up product quality shot"
+            }
+        ],
+        "variations": {
+            "colors": [
+                "Red",
+                "Blue",
+                "Black"
+            ],
+            "sizes": [
+                "S",
+                "M",
+                "L"
+            ]
+        }
+    },
+    {
+        "id": 33,
+        "title": "Trending Product 33",
+        "price_bdt": 3635,
+        "cost_bdt": 2280,
+        "short_description": "Quality checked sourcing item for retail and wholesale clients.",
+        "description_paragraphs": [
+            "Reliable product sourced from trusted suppliers in China.",
+            "Suitable for eCommerce, retail shelves, and gift packaging.",
+            "Flexible MOQ available depending on sourcing plan."
+        ],
+        "images": [
+            "https://picsum.photos/seed/china-product-33/800/500",
+            "https://picsum.photos/seed/china-product-33-2/800/500"
+        ],
+        "detail_images": [
+            {
+                "url": "https://picsum.photos/seed/china-product-detail-33/700/450",
+                "caption": "Close-up product quality shot"
+            }
+        ],
+        "variations": {
+            "colors": [
+                "Red",
+                "Blue",
+                "Black"
+            ],
+            "sizes": [
+                "S",
+                "M",
+                "L"
+            ]
+        }
+    },
+    {
+        "id": 34,
+        "title": "Trending Product 34",
+        "price_bdt": 3730,
+        "cost_bdt": 2340,
+        "short_description": "Quality checked sourcing item for retail and wholesale clients.",
+        "description_paragraphs": [
+            "Reliable product sourced from trusted suppliers in China.",
+            "Suitable for eCommerce, retail shelves, and gift packaging.",
+            "Flexible MOQ available depending on sourcing plan."
+        ],
+        "images": [
+            "https://picsum.photos/seed/china-product-34/800/500",
+            "https://picsum.photos/seed/china-product-34-2/800/500"
+        ],
+        "detail_images": [
+            {
+                "url": "https://picsum.photos/seed/china-product-detail-34/700/450",
+                "caption": "Close-up product quality shot"
+            }
+        ],
+        "variations": {
+            "colors": [
+                "Red",
+                "Blue",
+                "Black"
+            ],
+            "sizes": [
+                "S",
+                "M",
+                "L"
+            ]
+        }
+    },
+    {
+        "id": 35,
+        "title": "Trending Product 35",
+        "price_bdt": 3825,
+        "cost_bdt": 2400,
+        "short_description": "Quality checked sourcing item for retail and wholesale clients.",
+        "description_paragraphs": [
+            "Reliable product sourced from trusted suppliers in China.",
+            "Suitable for eCommerce, retail shelves, and gift packaging.",
+            "Flexible MOQ available depending on sourcing plan."
+        ],
+        "images": [
+            "https://picsum.photos/seed/china-product-35/800/500",
+            "https://picsum.photos/seed/china-product-35-2/800/500"
+        ],
+        "detail_images": [
+            {
+                "url": "https://picsum.photos/seed/china-product-detail-35/700/450",
+                "caption": "Close-up product quality shot"
+            }
+        ],
+        "variations": {
+            "colors": [
+                "Red",
+                "Blue",
+                "Black"
+            ],
+            "sizes": [
+                "S",
+                "M",
+                "L"
+            ]
+        }
+    },
+    {
+        "id": 36,
+        "title": "Trending Product 36",
+        "price_bdt": 3920,
+        "cost_bdt": 2460,
+        "short_description": "Quality checked sourcing item for retail and wholesale clients.",
+        "description_paragraphs": [
+            "Reliable product sourced from trusted suppliers in China.",
+            "Suitable for eCommerce, retail shelves, and gift packaging.",
+            "Flexible MOQ available depending on sourcing plan."
+        ],
+        "images": [
+            "https://picsum.photos/seed/china-product-36/800/500",
+            "https://picsum.photos/seed/china-product-36-2/800/500"
+        ],
+        "detail_images": [
+            {
+                "url": "https://picsum.photos/seed/china-product-detail-36/700/450",
+                "caption": "Close-up product quality shot"
+            }
+        ],
+        "variations": {
+            "colors": [
+                "Red",
+                "Blue",
+                "Black"
+            ],
+            "sizes": [
+                "S",
+                "M",
+                "L"
+            ]
+        }
+    },
+    {
+        "id": 37,
+        "title": "Trending Product 37",
+        "price_bdt": 4015,
+        "cost_bdt": 2520,
+        "short_description": "Quality checked sourcing item for retail and wholesale clients.",
+        "description_paragraphs": [
+            "Reliable product sourced from trusted suppliers in China.",
+            "Suitable for eCommerce, retail shelves, and gift packaging.",
+            "Flexible MOQ available depending on sourcing plan."
+        ],
+        "images": [
+            "https://picsum.photos/seed/china-product-37/800/500",
+            "https://picsum.photos/seed/china-product-37-2/800/500"
+        ],
+        "detail_images": [
+            {
+                "url": "https://picsum.photos/seed/china-product-detail-37/700/450",
+                "caption": "Close-up product quality shot"
+            }
+        ],
+        "variations": {
+            "colors": [
+                "Red",
+                "Blue",
+                "Black"
+            ],
+            "sizes": [
+                "S",
+                "M",
+                "L"
+            ]
+        }
+    },
+    {
+        "id": 38,
+        "title": "Trending Product 38",
+        "price_bdt": 4110,
+        "cost_bdt": 2580,
+        "short_description": "Quality checked sourcing item for retail and wholesale clients.",
+        "description_paragraphs": [
+            "Reliable product sourced from trusted suppliers in China.",
+            "Suitable for eCommerce, retail shelves, and gift packaging.",
+            "Flexible MOQ available depending on sourcing plan."
+        ],
+        "images": [
+            "https://picsum.photos/seed/china-product-38/800/500",
+            "https://picsum.photos/seed/china-product-38-2/800/500"
+        ],
+        "detail_images": [
+            {
+                "url": "https://picsum.photos/seed/china-product-detail-38/700/450",
+                "caption": "Close-up product quality shot"
+            }
+        ],
+        "variations": {
+            "colors": [
+                "Red",
+                "Blue",
+                "Black"
+            ],
+            "sizes": [
+                "S",
+                "M",
+                "L"
+            ]
+        }
+    },
+    {
+        "id": 39,
+        "title": "Trending Product 39",
+        "price_bdt": 4205,
+        "cost_bdt": 2640,
+        "short_description": "Quality checked sourcing item for retail and wholesale clients.",
+        "description_paragraphs": [
+            "Reliable product sourced from trusted suppliers in China.",
+            "Suitable for eCommerce, retail shelves, and gift packaging.",
+            "Flexible MOQ available depending on sourcing plan."
+        ],
+        "images": [
+            "https://picsum.photos/seed/china-product-39/800/500",
+            "https://picsum.photos/seed/china-product-39-2/800/500"
+        ],
+        "detail_images": [
+            {
+                "url": "https://picsum.photos/seed/china-product-detail-39/700/450",
+                "caption": "Close-up product quality shot"
+            }
+        ],
+        "variations": {
+            "colors": [
+                "Red",
+                "Blue",
+                "Black"
+            ],
+            "sizes": [
+                "S",
+                "M",
+                "L"
+            ]
+        }
+    },
+    {
+        "id": 40,
+        "title": "Trending Product 40",
+        "price_bdt": 4300,
+        "cost_bdt": 2700,
+        "short_description": "Quality checked sourcing item for retail and wholesale clients.",
+        "description_paragraphs": [
+            "Reliable product sourced from trusted suppliers in China.",
+            "Suitable for eCommerce, retail shelves, and gift packaging.",
+            "Flexible MOQ available depending on sourcing plan."
+        ],
+        "images": [
+            "https://picsum.photos/seed/china-product-40/800/500",
+            "https://picsum.photos/seed/china-product-40-2/800/500"
+        ],
+        "detail_images": [
+            {
+                "url": "https://picsum.photos/seed/china-product-detail-40/700/450",
+                "caption": "Close-up product quality shot"
+            }
+        ],
+        "variations": {
+            "colors": [
+                "Red",
+                "Blue",
+                "Black"
+            ],
+            "sizes": [
+                "S",
+                "M",
+                "L"
+            ]
+        }
+    }
+]
