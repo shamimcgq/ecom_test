@@ -6,28 +6,12 @@ require_once __DIR__ . '/includes/products.php';
 require_once __DIR__ . '/includes/orders.php';
 require_once __DIR__ . '/includes/shipping.php';
 require_once __DIR__ . '/includes/auth.php';
+require_once __DIR__ . '/includes/users.php';
 
 $siteConfig = getSiteConfig();
 $pageTitle = 'Admin Panel | ' . $siteConfig['site_name'];
 $notice = '';
 $tab = $_GET['tab'] ?? 'orders';
-
-function loadUsers(): array
-{
-    $path = __DIR__ . '/data/users.json';
-    if (!file_exists($path)) {
-        file_put_contents($path, json_encode([], JSON_PRETTY_PRINT));
-        return [];
-    }
-
-    $users = json_decode((string) file_get_contents($path), true);
-    return is_array($users) ? $users : [];
-}
-
-function saveUsers(array $users): void
-{
-    file_put_contents(__DIR__ . '/data/users.json', json_encode(array_values($users), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
-}
 
 if (isset($_GET['logout'])) {
     session_destroy();
@@ -81,7 +65,7 @@ if (!in_array($tab, $allowedTabs, true)) {
 
 $products = getProducts();
 $orders = getOrders();
-$users = loadUsers();
+$users = getUsers();
 $shipping = getShippingSettings();
 
 $canManageProducts = in_array('products', $allowedTabs, true);
@@ -107,9 +91,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') !== 'login
     }
 
     if ($action === 'add_product' && $canManageProducts) {
-        $newId = empty($products) ? 1 : (max(array_column($products, 'id')) + 1);
-        $products[] = [
-            'id' => $newId,
+        $newProduct = [
             'title' => trim($_POST['title'] ?? 'New Product'),
             'price_bdt' => (float) ($_POST['price_bdt'] ?? 0),
             'offer_price_bdt' => (float) ($_POST['offer_price_bdt'] ?? 0),
@@ -123,35 +105,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') !== 'login
                 'sizes' => array_values(array_filter(array_map('trim', explode(',', (string) ($_POST['sizes'] ?? ''))))),
             ],
         ];
-        saveProducts($products);
+        addProduct($newProduct);
         $notice = 'Product added.';
         $tab = 'products';
     }
 
     if ($action === 'delete_product' && $canManageProducts) {
         $id = (int) ($_POST['id'] ?? 0);
-        $products = array_values(array_filter($products, fn($p) => (int) $p['id'] !== $id));
-        saveProducts($products);
+        deleteProductById($id);
         $notice = 'Product deleted.';
         $tab = 'products';
     }
 
     if ($action === 'add_user' && $canManageUsers) {
-        $users[] = [
-            'id' => empty($users) ? 1 : max(array_column($users, 'id')) + 1,
+        addUser([
             'name' => trim($_POST['name'] ?? ''),
             'email' => trim($_POST['email'] ?? ''),
             'role' => trim($_POST['role'] ?? 'customer'),
-        ];
-        saveUsers($users);
+        ]);
         $notice = 'User added.';
         $tab = 'users';
     }
 
     if ($action === 'delete_user' && $canManageUsers) {
         $id = (int) ($_POST['id'] ?? 0);
-        $users = array_values(array_filter($users, fn($u) => (int) $u['id'] !== $id));
-        saveUsers($users);
+        deleteUserById($id);
         $notice = 'User deleted.';
         $tab = 'users';
     }
@@ -168,13 +146,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') !== 'login
     if ($action === 'update_order_status' && $canManageOrders) {
         $id = (int) ($_POST['id'] ?? 0);
         $status = trim($_POST['status'] ?? 'pending');
-        foreach ($orders as &$order) {
-            if ((int) ($order['id'] ?? 0) === $id) {
-                $order['status'] = $status;
-            }
-        }
-        unset($order);
-        saveOrders($orders);
+        updateOrderStatus($id, $status);
         $notice = 'Order status updated.';
         $tab = 'orders';
     }
@@ -182,6 +154,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') !== 'login
     $orders = getOrders();
     $shipping = getShippingSettings();
     $products = getProducts();
+    $users = getUsers();
 }
 
 $filterStatus = $_GET['status'] ?? 'all';

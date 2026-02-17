@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/db.php';
+
 function getSiteConfig(): array
 {
     $defaultConfig = [
@@ -12,24 +14,37 @@ function getSiteConfig(): array
         'banner_image' => 'https://images.unsplash.com/photo-1565891741441-64926e441838?auto=format&fit=crop&w=1500&q=80',
     ];
 
-    $configPath = __DIR__ . '/../data/config.json';
+    $pdo = db();
+    $stmt = $pdo->query('SELECT config_key, config_value FROM site_config');
+    $rows = $stmt->fetchAll();
 
-    if (!file_exists($configPath)) {
+    if (!$rows) {
+        saveSiteConfig($defaultConfig);
         return $defaultConfig;
     }
 
-    $json = file_get_contents($configPath);
-    $config = json_decode($json, true);
-
-    if (!is_array($config)) {
-        return $defaultConfig;
+    $dbConfig = [];
+    foreach ($rows as $row) {
+        $dbConfig[$row['config_key']] = $row['config_value'];
     }
 
-    return array_merge($defaultConfig, $config);
+    return array_merge($defaultConfig, $dbConfig);
 }
 
 function saveSiteConfig(array $config): bool
 {
-    $configPath = __DIR__ . '/../data/config.json';
-    return (bool) file_put_contents($configPath, json_encode($config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+    $pdo = db();
+    $stmt = $pdo->prepare(
+        'INSERT INTO site_config (config_key, config_value) VALUES (:config_key, :config_value)
+         ON DUPLICATE KEY UPDATE config_value = VALUES(config_value)'
+    );
+
+    foreach ($config as $key => $value) {
+        $stmt->execute([
+            'config_key' => (string) $key,
+            'config_value' => (string) $value,
+        ]);
+    }
+
+    return true;
 }

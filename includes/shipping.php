@@ -1,5 +1,7 @@
 <?php
 
+require_once __DIR__ . '/db.php';
+
 function getShippingSettings(): array
 {
     $default = [
@@ -8,18 +10,37 @@ function getShippingSettings(): array
         'outside_dhaka_charge_bdt' => 130,
     ];
 
-    $path = __DIR__ . '/../data/shipping.json';
-    if (!file_exists($path)) {
-        file_put_contents($path, json_encode($default, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+    $pdo = db();
+    $stmt = $pdo->query('SELECT free_shipping_threshold_bdt, inside_dhaka_charge_bdt, outside_dhaka_charge_bdt FROM shipping_settings WHERE id = 1 LIMIT 1');
+    $settings = $stmt->fetch();
+
+    if (!$settings) {
+        saveShippingSettings($default);
         return $default;
     }
 
-    $data = json_decode((string) file_get_contents($path), true);
-    return is_array($data) ? array_merge($default, $data) : $default;
+    return array_merge($default, [
+        'free_shipping_threshold_bdt' => (float) $settings['free_shipping_threshold_bdt'],
+        'inside_dhaka_charge_bdt' => (float) $settings['inside_dhaka_charge_bdt'],
+        'outside_dhaka_charge_bdt' => (float) $settings['outside_dhaka_charge_bdt'],
+    ]);
 }
 
 function saveShippingSettings(array $settings): bool
 {
-    $path = __DIR__ . '/../data/shipping.json';
-    return (bool) file_put_contents($path, json_encode($settings, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+    $pdo = db();
+    $stmt = $pdo->prepare(
+        'INSERT INTO shipping_settings (id, free_shipping_threshold_bdt, inside_dhaka_charge_bdt, outside_dhaka_charge_bdt)
+         VALUES (1, :free_shipping_threshold_bdt, :inside_dhaka_charge_bdt, :outside_dhaka_charge_bdt)
+         ON DUPLICATE KEY UPDATE
+            free_shipping_threshold_bdt = VALUES(free_shipping_threshold_bdt),
+            inside_dhaka_charge_bdt = VALUES(inside_dhaka_charge_bdt),
+            outside_dhaka_charge_bdt = VALUES(outside_dhaka_charge_bdt)'
+    );
+
+    return $stmt->execute([
+        'free_shipping_threshold_bdt' => (float) ($settings['free_shipping_threshold_bdt'] ?? 1500),
+        'inside_dhaka_charge_bdt' => (float) ($settings['inside_dhaka_charge_bdt'] ?? 70),
+        'outside_dhaka_charge_bdt' => (float) ($settings['outside_dhaka_charge_bdt'] ?? 130),
+    ]);
 }
