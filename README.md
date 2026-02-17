@@ -23,3 +23,15 @@ This project now uses **MySQL** instead of JSON files for application data.
 - `users`
 - `orders`
 - `order_items`
+
+
+## Routing
+
+- `/` Home
+- `/admin` Admin panel
+- `/checkout` Checkout
+- `/inquiry` Inquiry
+- `/product/{slug}` Product detail page (slug-based URL)
+- `/submit-order` Order submission endpoint
+
+A front controller is implemented in `index.php` with rewrite rules in `.htaccess`.

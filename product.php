@@ -4,8 +4,11 @@ require_once __DIR__ . '/includes/products.php';
 require_once __DIR__ . '/includes/shipping.php';
 
 $siteConfig = getSiteConfig();
-$productId = isset($_GET['id']) ? (int) $_GET['id'] : 0;
-$product = findProductById($productId);
+$productSlug = trim((string) ($_GET['slug'] ?? ''));
+$product = $productSlug !== '' ? findProductBySlug($productSlug) : null;
+if (!$product && isset($_GET['id'])) {
+    $product = findProductById((int) $_GET['id']);
+}
 
 if (!$product) {
     http_response_code(404);
@@ -71,7 +74,7 @@ require_once __DIR__ . '/includes/header.php';
             </div>
 
             <div class="product-actions">
-                <button class="icon-btn detail-add-cart" data-id="<?php echo (int) $product['id']; ?>" data-name="<?php echo htmlspecialchars($product['title']); ?>" data-price="<?php echo (float) $product['price_bdt']; ?>" type="button">🛒 Add to Cart</button>
+                <button class="icon-btn detail-add-cart" data-id="<?php echo (int) $product['id']; ?>" data-name="<?php echo htmlspecialchars($product['title']); ?>" data-price="<?php echo (float) $product['price_bdt']; ?>" type="button"><i class="fa-solid fa-cart-plus"></i> Add to Cart</button>
             </div>
         </article>
     </div>
@@ -94,7 +97,7 @@ require_once __DIR__ . '/includes/header.php';
 <div class="floating-cart-bar">
     <div class="floating-cart-main">
         <div>
-            <p class="floating-cart-title">🛒 Cart <strong id="detail-cart-count">0</strong></p>
+            <p class="floating-cart-title"><i class="fa-solid fa-cart-shopping"></i> Cart <strong id="detail-cart-count">0</strong></p>
             <p class="floating-cart-subtitle">Continue from your cart</p>
         </div>
         <button id="detail-go-checkout" class="floating-cart-btn" type="button">Checkout</button>
@@ -285,7 +288,7 @@ require_once __DIR__ . '/includes/header.php';
         payload.cart_items = currentOrderItems.map((item) => ({ id: item.id, qty: item.qty }));
 
         try {
-            const response = await fetch('submit_order.php', {
+            const response = await fetch('/submit-order', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),
@@ -295,8 +298,8 @@ require_once __DIR__ . '/includes/header.php';
                 showToast(data.message || 'Failed to submit order', 'error');
                 return;
             }
-            track('Purchase', { value: data.grand_total_bdt || 0, order_id: data.order_id || 0 });
-            showToast(`Order submitted (#${data.order_id})`);
+            track('Purchase', { value: data.grand_total_bdt || 0 });
+            showToast(data.message || 'Order submitted successfully');
             closeOrderModal();
             orderForm.reset();
 

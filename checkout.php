@@ -5,6 +5,7 @@ require_once __DIR__ . '/includes/shipping.php';
 
 $siteConfig = getSiteConfig();
 $pageTitle = 'Checkout | ' . $siteConfig['site_name'];
+$bodyClass = 'checkout-page';
 $products = getProducts();
 $shipping = getShippingSettings();
 
@@ -14,8 +15,8 @@ require_once __DIR__ . '/includes/header.php';
 <section class="section">
     <div class="container checkout-layout compact-checkout">
         <article class="card">
-            <h2>✨ Smart Checkout</h2>
-            <p class="muted">Please confirm your delivery and contact details.</p>
+            <h2>Checkout</h2>
+            <p class="muted">Confirm your delivery details and place order quickly.</p>
             <form id="checkout-form">
                 <div class="grid two-col">
                     <div class="form-group"><label>Name *</label><input name="name" required></div>
@@ -41,7 +42,7 @@ require_once __DIR__ . '/includes/header.php';
         </article>
 
         <article class="card">
-            <h3>🧾 Order Summary</h3>
+            <h3><i class="fa-solid fa-receipt"></i> Order Summary</h3>
             <div id="checkout-summary" class="order-summary muted">Loading cart...</div>
             <p class="muted">Free shipping on order over ৳<?php echo (int) ($shipping['free_shipping_threshold_bdt'] ?? 1500); ?></p>
         </article>
@@ -137,7 +138,7 @@ require_once __DIR__ . '/includes/header.php';
         const payload = Object.fromEntries(new FormData(form).entries());
         payload.cart_items = cart.map((i) => ({ id: Number(i.id), qty: Number(i.qty) }));
 
-        const response = await fetch('submit_order.php', {
+        const response = await fetch('/submit-order', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload),
@@ -147,7 +148,7 @@ require_once __DIR__ . '/includes/header.php';
         msg.textContent = data.message || 'Something went wrong.';
 
         if (data.success) {
-            track('Purchase', { value: data.grand_total_bdt || 0, order_id: data.order_id || 0 });
+            track('Purchase', { value: data.grand_total_bdt || 0 });
             localStorage.setItem('ch_cart', '[]');
             cart = [];
             renderSummary();

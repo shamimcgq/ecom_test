@@ -11,11 +11,11 @@
         <div>
             <h4>Follow Us</h4>
             <p class="social-links">
-                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">📘 Facebook</a>
-                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">📸 Instagram</a>
-                <a href="https://youtube.com" target="_blank" rel="noopener noreferrer">▶️ YouTube</a>
-                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">💼 LinkedIn</a>
-                <a href="https://x.com" target="_blank" rel="noopener noreferrer">𝕏 X</a>
+                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-facebook"></i> Facebook</a>
+                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-instagram"></i> Instagram</a>
+                <a href="https://youtube.com" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-youtube"></i> YouTube</a>
+                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-linkedin"></i> LinkedIn</a>
+                <a href="https://x.com" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-x-twitter"></i> X</a>
             </p>
         </div>
         <div>

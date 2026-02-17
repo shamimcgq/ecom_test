@@ -98,7 +98,6 @@ $order = addOrder([
 echo json_encode([
     'success' => true,
     'message' => 'Order submitted successfully. Our team will contact you shortly.',
-    'order_id' => $order['id'] ?? null,
     'subtotal_bdt' => round($subtotal),
     'delivery_charge_bdt' => round($deliveryCharge),
     'grand_total_bdt' => round($grandTotal),

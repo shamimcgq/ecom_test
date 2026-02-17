@@ -15,7 +15,7 @@ $tab = $_GET['tab'] ?? 'orders';
 
 if (isset($_GET['logout'])) {
     session_destroy();
-    header('Location: admin.php');
+    header('Location: /admin');
     exit;
 }
 
@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'login
             'role' => $user['role'],
             'name' => $user['name'] ?? $user['username'],
         ];
-        header('Location: admin.php');
+        header('Location: /admin');
         exit;
     }
 
@@ -176,13 +176,13 @@ require_once __DIR__ . '/includes/header.php';
     <div class="container">
         <div class="admin-head">
             <h2>Admin Dashboard</h2>
-            <p class="muted">Signed in as <?php echo htmlspecialchars($adminUser['name'] . ' (' . $adminUser['role'] . ')'); ?> | <a href="admin.php?logout=1">Logout</a></p>
+            <p class="muted">Signed in as <?php echo htmlspecialchars($adminUser['name'] . ' (' . $adminUser['role'] . ')'); ?> | <a href="/admin?logout=1">Logout</a></p>
         </div>
         <?php if ($notice): ?><p class="notice"><?php echo htmlspecialchars($notice); ?></p><?php endif; ?>
 
         <div class="admin-menu">
             <?php foreach ($allowedTabs as $allowedTab): ?>
-                <a class="<?php echo $tab === $allowedTab ? 'active' : ''; ?>" href="admin.php?tab=<?php echo urlencode($allowedTab); ?>"><?php echo ucfirst($allowedTab); ?></a>
+                <a class="<?php echo $tab === $allowedTab ? 'active' : ''; ?>" href="/admin?tab=<?php echo urlencode($allowedTab); ?>"><?php echo ucfirst($allowedTab); ?></a>
             <?php endforeach; ?>
         </div>
 
@@ -235,7 +235,7 @@ require_once __DIR__ . '/includes/header.php';
                 <h3>Order List</h3>
                 <div class="filter-buttons">
                     <?php foreach (['all','pending','confirmed','delivered','cancelled'] as $status): ?>
-                        <a class="filter-btn <?php echo $filterStatus === $status ? 'active' : ''; ?>" href="admin.php?tab=orders&status=<?php echo $status; ?>"><?php echo ucfirst($status); ?></a>
+                        <a class="filter-btn <?php echo $filterStatus === $status ? 'active' : ''; ?>" href="/admin?tab=orders&status=<?php echo $status; ?>"><?php echo ucfirst($status); ?></a>
                     <?php endforeach; ?>
                 </div>
 
