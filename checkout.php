@@ -138,7 +138,7 @@ require_once __DIR__ . '/includes/header.php';
         const payload = Object.fromEntries(new FormData(form).entries());
         payload.cart_items = cart.map((i) => ({ id: Number(i.id), qty: Number(i.qty) }));
 
-        const response = await fetch('/submit-order', {
+        const response = await fetch('submit_order.php', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload),

@@ -12,7 +12,6 @@ $waNumber = preg_replace('/\D+/', '', $siteConfig['whatsapp_number'] ?? '');
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <base href="/">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title><?php echo htmlspecialchars($pageTitle); ?></title>
     <link rel="stylesheet" href="assets/css/style.css">
@@ -36,7 +35,7 @@ $waNumber = preg_replace('/\D+/', '', $siteConfig['whatsapp_number'] ?? '');
 <body class="<?php echo htmlspecialchars($bodyClass ?? ''); ?>">
 <header class="site-header">
     <div class="container nav-wrap">
-        <a class="brand" href="/">
+        <a class="brand" href="index.php">
             <?php if (!empty($siteConfig['logo_url'])): ?>
                 <img src="<?php echo htmlspecialchars($siteConfig['logo_url']); ?>" alt="<?php echo htmlspecialchars($siteConfig['site_name']); ?> logo" class="brand-logo">
             <?php endif; ?>
@@ -46,10 +45,10 @@ $waNumber = preg_replace('/\D+/', '', $siteConfig['whatsapp_number'] ?? '');
         <button id="menu-toggle" class="menu-toggle" type="button" aria-expanded="false" aria-controls="main-menu"><i class="fa-solid fa-bars"></i></button>
 
         <nav id="main-menu" class="menu">
-            <a href="/">Home</a>
-            <a href="/#services">Services</a>
-            <a href="/#shop">Shop</a>
-            <a href="/admin">Admin</a>
+            <a href="index.php">Home</a>
+            <a href="index.php#services">Services</a>
+            <a href="index.php#shop">Shop</a>
+            <a href="admin.php">Admin</a>
             <?php if (!empty($waNumber)): ?>
                 <a class="wa-btn" href="https://wa.me/<?php echo htmlspecialchars($waNumber); ?>" target="_blank" rel="noopener noreferrer"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
             <?php endif; ?>

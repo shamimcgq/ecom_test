@@ -59,7 +59,7 @@ require_once __DIR__ . '/includes/header.php';
                         <div class="service-pill"><i class="<?php echo htmlspecialchars($service['icon']); ?>"></i> Verified</div>
                         <h3><?php echo htmlspecialchars($service['title']); ?></h3>
                         <p><?php echo htmlspecialchars($service['description']); ?></p>
-                        <a class="btn" href="/inquiry?service=<?php echo urlencode($service['title']); ?>">Send Query</a>
+                        <a class="btn" href="inquiry.php?service=<?php echo urlencode($service['title']); ?>">Send Query</a>
                     </div>
                 </article>
             <?php endforeach; ?>
@@ -74,7 +74,7 @@ require_once __DIR__ . '/includes/header.php';
             <button id="open-cart" class="cart-chip" type="button"><i class="fa-solid fa-cart-shopping"></i> Cart <span id="cart-count">0</span></button>
         </div>
 
-        <form method="get" action="/#shop" class="search-form">
+        <form method="get" action="index.php#shop" class="search-form">
             <input type="text" name="q" value="<?php echo htmlspecialchars($searchQuery); ?>" placeholder="Search products by name or details">
             <button type="submit" class="btn">Search</button>
         </form>
@@ -84,10 +84,10 @@ require_once __DIR__ . '/includes/header.php';
         <div class="grid product-grid">
             <?php foreach ($productsForPage as $product): ?>
                 <article class="card product">
-                    <a href="/product/<?php echo urlencode($product['slug'] ?? ""); ?>">
+                    <a href="product.php?slug=<?php echo urlencode($product['slug'] ?? ""); ?>">
                         <img src="<?php echo htmlspecialchars($product['images'][0]); ?>" alt="<?php echo htmlspecialchars($product['title']); ?>">
                     </a>
-                    <h3><a class="product-title" href="/product/<?php echo urlencode($product['slug'] ?? ""); ?>"><?php echo htmlspecialchars($product['title']); ?></a></h3>
+                    <h3><a class="product-title" href="product.php?slug=<?php echo urlencode($product['slug'] ?? ""); ?>"><?php echo htmlspecialchars($product['title']); ?></a></h3>
                     <p><?php echo htmlspecialchars($product['short_description']); ?></p>
                     <p class="price">৳<?php echo number_format((float) $product['price_bdt'], 0); ?></p>
                     <div class="product-actions">
@@ -101,7 +101,7 @@ require_once __DIR__ . '/includes/header.php';
         <?php if ($totalPages > 1): ?>
             <div class="pagination">
                 <?php for ($page = 1; $page <= $totalPages; $page++): ?>
-                    <a href="/?page=<?php echo $page; ?>&q=<?php echo urlencode($searchQuery); ?>#shop" class="<?php echo $currentPage === $page ? 'active' : ''; ?>"><?php echo $page; ?></a>
+                    <a href="index.php?page=<?php echo $page; ?>&q=<?php echo urlencode($searchQuery); ?>#shop" class="<?php echo $currentPage === $page ? 'active' : ''; ?>"><?php echo $page; ?></a>
                 <?php endfor; ?>
             </div>
         <?php endif; ?>
@@ -429,7 +429,7 @@ require_once __DIR__ . '/includes/header.php';
         payload.cart_items = currentOrderItems.map((item) => ({ id: item.id, qty: item.qty }));
 
         try {
-            const response = await fetch('/submit-order', {
+            const response = await fetch('submit_order.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload),

@@ -22,7 +22,7 @@ require_once __DIR__ . '/includes/header.php';
             <p class="notice"><?php echo htmlspecialchars($message); ?></p>
         <?php endif; ?>
 
-        <form method="post" action="/inquiry">
+        <form method="post" action="inquiry.php">
             <div class="form-group">
                 <label for="service">Selected Service</label>
                 <input type="text" id="service" name="service" value="<?php echo htmlspecialchars($service); ?>" required>
