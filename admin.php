@@ -1,13 +1,16 @@
 <?php
+session_start();
+
 require_once __DIR__ . '/includes/config.php';
 require_once __DIR__ . '/includes/products.php';
 require_once __DIR__ . '/includes/orders.php';
 require_once __DIR__ . '/includes/shipping.php';
+require_once __DIR__ . '/includes/auth.php';
 
 $siteConfig = getSiteConfig();
 $pageTitle = 'Admin Panel | ' . $siteConfig['site_name'];
 $notice = '';
-$tab = $_GET['tab'] ?? 'products';
+$tab = $_GET['tab'] ?? 'orders';
 
 function loadUsers(): array
 {
@@ -26,15 +29,71 @@ function saveUsers(array $users): void
     file_put_contents(__DIR__ . '/data/users.json', json_encode(array_values($users), JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 }
 
+if (isset($_GET['logout'])) {
+    session_destroy();
+    header('Location: admin.php');
+    exit;
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') === 'login') {
+    $user = authenticateAdmin(trim((string) ($_POST['username'] ?? '')), (string) ($_POST['password'] ?? ''));
+    if ($user) {
+        $_SESSION['admin_user'] = [
+            'username' => $user['username'],
+            'role' => $user['role'],
+            'name' => $user['name'] ?? $user['username'],
+        ];
+        header('Location: admin.php');
+        exit;
+    }
+
+    $notice = 'Invalid username or password.';
+}
+
+$adminUser = $_SESSION['admin_user'] ?? null;
+if (!$adminUser) {
+    require_once __DIR__ . '/includes/header.php';
+    ?>
+    <section class="section">
+        <div class="container" style="max-width:520px;">
+            <article class="card">
+                <h2>Admin Login</h2>
+                <?php if ($notice): ?><p class="notice"><?php echo htmlspecialchars($notice); ?></p><?php endif; ?>
+                <form method="post">
+                    <input type="hidden" name="action" value="login">
+                    <div class="form-group"><label>Username</label><input name="username" required></div>
+                    <div class="form-group"><label>Password</label><input type="password" name="password" required></div>
+                    <button class="btn" type="submit">Login</button>
+                </form>
+                <p class="muted">Sample users: superadmin / Admin@123, manager / Manager@123, ops / Ops@123</p>
+            </article>
+        </div>
+    </section>
+    <?php
+    require_once __DIR__ . '/includes/footer.php';
+    exit;
+}
+
+$allowedTabs = roleTabs((string) $adminUser['role']);
+if (!in_array($tab, $allowedTabs, true)) {
+    $tab = $allowedTabs[0] ?? 'orders';
+}
+
 $products = getProducts();
 $orders = getOrders();
 $users = loadUsers();
 $shipping = getShippingSettings();
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+$canManageProducts = in_array('products', $allowedTabs, true);
+$canManageOrders = in_array('orders', $allowedTabs, true);
+$canManageShipping = in_array('shipping', $allowedTabs, true);
+$canManageUsers = in_array('users', $allowedTabs, true);
+$canManageBanner = in_array('banner', $allowedTabs, true);
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') !== 'login') {
     $action = $_POST['action'] ?? '';
 
-    if ($action === 'save_banner') {
+    if ($action === 'save_banner' && $canManageBanner) {
         $siteConfig['site_name'] = trim($_POST['site_name'] ?? $siteConfig['site_name']);
         $siteConfig['logo_url'] = trim($_POST['logo_url'] ?? $siteConfig['logo_url']);
         $siteConfig['whatsapp_number'] = trim($_POST['whatsapp_number'] ?? $siteConfig['whatsapp_number']);
@@ -47,12 +106,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $tab = 'banner';
     }
 
-    if ($action === 'add_product') {
+    if ($action === 'add_product' && $canManageProducts) {
         $newId = empty($products) ? 1 : (max(array_column($products, 'id')) + 1);
         $products[] = [
             'id' => $newId,
             'title' => trim($_POST['title'] ?? 'New Product'),
             'price_bdt' => (float) ($_POST['price_bdt'] ?? 0),
+            'offer_price_bdt' => (float) ($_POST['offer_price_bdt'] ?? 0),
             'cost_bdt' => (float) ($_POST['cost_bdt'] ?? 0),
             'short_description' => trim($_POST['short_description'] ?? ''),
             'description_paragraphs' => [trim($_POST['description'] ?? '')],
@@ -68,7 +128,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $tab = 'products';
     }
 
-    if ($action === 'delete_product') {
+    if ($action === 'delete_product' && $canManageProducts) {
         $id = (int) ($_POST['id'] ?? 0);
         $products = array_values(array_filter($products, fn($p) => (int) $p['id'] !== $id));
         saveProducts($products);
@@ -76,23 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $tab = 'products';
     }
 
-    if ($action === 'update_product') {
-        $id = (int) ($_POST['id'] ?? 0);
-        foreach ($products as &$product) {
-            if ((int) $product['id'] === $id) {
-                $product['title'] = trim($_POST['title'] ?? $product['title']);
-                $product['price_bdt'] = (float) ($_POST['price_bdt'] ?? $product['price_bdt']);
-                $product['cost_bdt'] = (float) ($_POST['cost_bdt'] ?? $product['cost_bdt']);
-                $product['short_description'] = trim($_POST['short_description'] ?? $product['short_description']);
-            }
-        }
-        unset($product);
-        saveProducts($products);
-        $notice = 'Product updated.';
-        $tab = 'products';
-    }
-
-    if ($action === 'add_user') {
+    if ($action === 'add_user' && $canManageUsers) {
         $users[] = [
             'id' => empty($users) ? 1 : max(array_column($users, 'id')) + 1,
             'name' => trim($_POST['name'] ?? ''),
@@ -104,7 +148,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $tab = 'users';
     }
 
-    if ($action === 'delete_user') {
+    if ($action === 'delete_user' && $canManageUsers) {
         $id = (int) ($_POST['id'] ?? 0);
         $users = array_values(array_filter($users, fn($u) => (int) $u['id'] !== $id));
         saveUsers($users);
@@ -112,7 +156,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $tab = 'users';
     }
 
-    if ($action === 'save_shipping') {
+    if ($action === 'save_shipping' && $canManageShipping) {
         $shipping['free_shipping_threshold_bdt'] = (float) ($_POST['free_shipping_threshold_bdt'] ?? $shipping['free_shipping_threshold_bdt']);
         $shipping['inside_dhaka_charge_bdt'] = (float) ($_POST['inside_dhaka_charge_bdt'] ?? $shipping['inside_dhaka_charge_bdt']);
         $shipping['outside_dhaka_charge_bdt'] = (float) ($_POST['outside_dhaka_charge_bdt'] ?? $shipping['outside_dhaka_charge_bdt']);
@@ -121,7 +165,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $tab = 'shipping';
     }
 
-    if ($action === 'update_order_status') {
+    if ($action === 'update_order_status' && $canManageOrders) {
         $id = (int) ($_POST['id'] ?? 0);
         $status = trim($_POST['status'] ?? 'pending');
         foreach ($orders as &$order) {
@@ -157,19 +201,19 @@ require_once __DIR__ . '/includes/header.php';
 
 <section class="section">
     <div class="container">
-        <h2>Admin Dashboard</h2>
+        <div class="admin-head">
+            <h2>Admin Dashboard</h2>
+            <p class="muted">Signed in as <?php echo htmlspecialchars($adminUser['name'] . ' (' . $adminUser['role'] . ')'); ?> | <a href="admin.php?logout=1">Logout</a></p>
+        </div>
         <?php if ($notice): ?><p class="notice"><?php echo htmlspecialchars($notice); ?></p><?php endif; ?>
 
         <div class="admin-menu">
-            <a class="<?php echo $tab === 'products' ? 'active' : ''; ?>" href="admin.php?tab=products">Products</a>
-            <a class="<?php echo $tab === 'orders' ? 'active' : ''; ?>" href="admin.php?tab=orders">Orders</a>
-            <a class="<?php echo $tab === 'pnl' ? 'active' : ''; ?>" href="admin.php?tab=pnl">PNL</a>
-            <a class="<?php echo $tab === 'banner' ? 'active' : ''; ?>" href="admin.php?tab=banner">Banner</a>
-            <a class="<?php echo $tab === 'users' ? 'active' : ''; ?>" href="admin.php?tab=users">Users</a>
-            <a class="<?php echo $tab === 'shipping' ? 'active' : ''; ?>" href="admin.php?tab=shipping">Shipping</a>
+            <?php foreach ($allowedTabs as $allowedTab): ?>
+                <a class="<?php echo $tab === $allowedTab ? 'active' : ''; ?>" href="admin.php?tab=<?php echo urlencode($allowedTab); ?>"><?php echo ucfirst($allowedTab); ?></a>
+            <?php endforeach; ?>
         </div>
 
-        <?php if ($tab === 'products'): ?>
+        <?php if ($tab === 'products' && $canManageProducts): ?>
             <div class="card admin-block">
                 <h3>Add Product</h3>
                 <form method="post">
@@ -178,6 +222,7 @@ require_once __DIR__ . '/includes/header.php';
                         <div class="form-group"><label>Title</label><input name="title" required></div>
                         <div class="form-group"><label>Image URL</label><input name="image" required></div>
                         <div class="form-group"><label>Price (BDT)</label><input name="price_bdt" type="number" step="0.01" required></div>
+                        <div class="form-group"><label>Offer Price (BDT)</label><input name="offer_price_bdt" type="number" step="0.01"></div>
                         <div class="form-group"><label>Cost (BDT)</label><input name="cost_bdt" type="number" step="0.01" required></div>
                         <div class="form-group"><label>Colors (comma separated)</label><input name="colors"></div>
                         <div class="form-group"><label>Sizes (comma separated)</label><input name="sizes"></div>
@@ -195,7 +240,7 @@ require_once __DIR__ . '/includes/header.php';
                         <img src="<?php echo htmlspecialchars($product['images'][0] ?? ''); ?>" alt="product" class="admin-thumb">
                         <div>
                             <strong><?php echo htmlspecialchars($product['title']); ?></strong>
-                            <p class="muted">Price: ৳<?php echo number_format((float) $product['price_bdt'], 0); ?> | Cost: ৳<?php echo number_format((float) $product['cost_bdt'], 0); ?></p>
+                            <p class="muted">Price: ৳<?php echo number_format((float) $product['price_bdt'], 0); ?> | Offer: ৳<?php echo number_format((float) ($product['offer_price_bdt'] ?? 0), 0); ?> | Cost: ৳<?php echo number_format((float) $product['cost_bdt'], 0); ?></p>
                         </div>
                         <form method="post" class="inline-form">
                             <input type="hidden" name="action" value="delete_product">
@@ -207,7 +252,7 @@ require_once __DIR__ . '/includes/header.php';
             </div>
         <?php endif; ?>
 
-        <?php if ($tab === 'orders'): ?>
+        <?php if ($tab === 'orders' && $canManageOrders): ?>
             <div class="grid three-col">
                 <article class="card"><h3>Total Orders</h3><p><?php echo $totalOrders; ?></p></article>
                 <article class="card"><h3>Delivered</h3><p><?php echo $deliveredOrders; ?></p></article>
@@ -216,40 +261,23 @@ require_once __DIR__ . '/includes/header.php';
             <div class="card admin-block">
                 <h3>Order List</h3>
                 <div class="filter-buttons">
-                    <a class="filter-btn <?php echo $filterStatus === 'all' ? 'active' : ''; ?>" href="admin.php?tab=orders&status=all">All</a>
-                    <a class="filter-btn <?php echo $filterStatus === 'pending' ? 'active' : ''; ?>" href="admin.php?tab=orders&status=pending">Pending</a>
-                    <a class="filter-btn <?php echo $filterStatus === 'confirmed' ? 'active' : ''; ?>" href="admin.php?tab=orders&status=confirmed">Confirmed</a>
-                    <a class="filter-btn <?php echo $filterStatus === 'delivered' ? 'active' : ''; ?>" href="admin.php?tab=orders&status=delivered">Delivered</a>
-                    <a class="filter-btn <?php echo $filterStatus === 'cancelled' ? 'active' : ''; ?>" href="admin.php?tab=orders&status=cancelled">Cancelled</a>
+                    <?php foreach (['all','pending','confirmed','delivered','cancelled'] as $status): ?>
+                        <a class="filter-btn <?php echo $filterStatus === $status ? 'active' : ''; ?>" href="admin.php?tab=orders&status=<?php echo $status; ?>"><?php echo ucfirst($status); ?></a>
+                    <?php endforeach; ?>
                 </div>
 
                 <div class="table-wrap">
                     <table class="order-table">
                         <thead>
                         <tr>
-                            <th>SL</th>
-                            <th>Order ID</th>
-                            <th>Customer</th>
-                            <th>Phone</th>
-                            <th>Email</th>
-                            <th>Product</th>
-                            <th>Price</th>
-                            <th>Qty</th>
-                            <th>Delivery</th>
-                            <th>Total</th>
-                            <th>Pickup</th>
-                            <th>Status</th>
+                            <th>SL</th><th>Order ID</th><th>Customer</th><th>Phone</th><th>Email</th><th>Product</th><th>Price</th><th>Qty</th><th>Delivery</th><th>Total</th><th>Pickup</th><th>Status</th>
                         </tr>
                         </thead>
                         <tbody>
                         <?php $sl = 1; foreach ($filteredOrders as $order): ?>
                             <?php $items = is_array($order['items'] ?? null) ? $order['items'] : []; ?>
-                            <?php if (!$items): $items = [[
-                                'title' => $order['product_name'] ?? 'N/A',
-                                'unit_price_bdt' => $order['amount_bdt'] ?? 0,
-                                'qty' => 1,
-                            ]]; endif; ?>
-                            <?php foreach ($items as $idx => $item): ?>
+                            <?php if (!$items): $items = [['title' => $order['product_name'] ?? 'N/A','unit_price_bdt' => $order['amount_bdt'] ?? 0,'qty' => 1]]; endif; ?>
+                            <?php foreach ($items as $item): ?>
                                 <tr>
                                     <td><?php echo $sl++; ?></td>
                                     <td>#<?php echo (int) ($order['id'] ?? 0); ?></td>
@@ -292,7 +320,7 @@ require_once __DIR__ . '/includes/header.php';
             </div>
         <?php endif; ?>
 
-        <?php if ($tab === 'banner'): ?>
+        <?php if ($tab === 'banner' && $canManageBanner): ?>
             <div class="card admin-block">
                 <h3>Banner & Branding</h3>
                 <form method="post">
@@ -309,7 +337,7 @@ require_once __DIR__ . '/includes/header.php';
             </div>
         <?php endif; ?>
 
-        <?php if ($tab === 'users'): ?>
+        <?php if ($tab === 'users' && $canManageUsers): ?>
             <div class="card admin-block">
                 <h3>Add User</h3>
                 <form method="post">
@@ -341,7 +369,7 @@ require_once __DIR__ . '/includes/header.php';
             </div>
         <?php endif; ?>
 
-        <?php if ($tab === 'shipping'): ?>
+        <?php if ($tab === 'shipping' && $canManageShipping): ?>
             <div class="card admin-block">
                 <h3>Shipping Settings</h3>
                 <form method="post">

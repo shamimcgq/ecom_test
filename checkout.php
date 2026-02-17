@@ -12,9 +12,9 @@ require_once __DIR__ . '/includes/header.php';
 ?>
 
 <section class="section">
-    <div class="container checkout-layout">
+    <div class="container checkout-layout compact-checkout">
         <article class="card">
-            <h2>Checkout</h2>
+            <h2>✨ Smart Checkout</h2>
             <p class="muted">Please confirm your delivery and contact details.</p>
             <form id="checkout-form">
                 <div class="grid two-col">
@@ -41,7 +41,7 @@ require_once __DIR__ . '/includes/header.php';
         </article>
 
         <article class="card">
-            <h3>Order Summary</h3>
+            <h3>🧾 Order Summary</h3>
             <div id="checkout-summary" class="order-summary muted">Loading cart...</div>
             <p class="muted">Free shipping on order over ৳<?php echo (int) ($shipping['free_shipping_threshold_bdt'] ?? 1500); ?></p>
         </article>

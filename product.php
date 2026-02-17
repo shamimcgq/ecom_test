@@ -29,6 +29,9 @@ require_once __DIR__ . '/includes/header.php';
 ?>
 
 <section class="section">
+    <div class="container">
+        <h1 class="product-top-title"><?php echo htmlspecialchars($product['title']); ?></h1>
+    </div>
     <div class="container product-details-layout">
         <div>
             <div class="slide-wrap">
@@ -49,7 +52,6 @@ require_once __DIR__ . '/includes/header.php';
         </div>
 
         <article class="card">
-            <h1><?php echo htmlspecialchars($product['title']); ?></h1>
             <div class="price-highlight">
                 <p class="price current">Price: ৳<?php echo number_format((float) $product['price_bdt'], 0); ?></p>
                 <p class="offer-price">Offer: ৳<?php echo number_format($offerPrice, 0); ?></p>
@@ -57,7 +59,6 @@ require_once __DIR__ . '/includes/header.php';
 
             <div class="product-actions">
                 <button class="buy-btn detail-buy-now" data-id="<?php echo (int) $product['id']; ?>" data-name="<?php echo htmlspecialchars($product['title']); ?>" data-price="<?php echo (float) $product['price_bdt']; ?>" type="button">Buy Now</button>
-                <button class="btn detail-order-now" data-id="<?php echo (int) $product['id']; ?>" data-name="<?php echo htmlspecialchars($product['title']); ?>" data-price="<?php echo (float) $product['price_bdt']; ?>" type="button">Order Now</button>
             </div>
 
             <?php foreach ($product['description_paragraphs'] as $paragraph): ?>
@@ -262,9 +263,6 @@ require_once __DIR__ . '/includes/header.php';
     document.querySelector('.detail-buy-now')?.addEventListener('click', () => {
         openOrderModal([{ id: productInfo.id, name: productInfo.name, price: productInfo.price, qty: 1 }]);
         track('BuyNowClick', { product_id: productInfo.id, value: productInfo.price });
-    });
-    document.querySelector('.detail-order-now')?.addEventListener('click', () => {
-        openOrderModal([{ id: productInfo.id, name: productInfo.name, price: productInfo.price, qty: 1 }]);
     });
 
     document.getElementById('detail-go-checkout').addEventListener('click', () => {

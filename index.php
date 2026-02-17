@@ -108,6 +108,22 @@ require_once __DIR__ . '/includes/header.php';
     </div>
 </section>
 
+<section class="section trust-section">
+    <div class="container">
+        <h2>🛡️ Why Customers Trust Us</h2>
+        <div class="trust-slider">
+            <div class="trust-track">
+                <article class="card trust-card">✅ <strong>Verified Sellers</strong><p>Only approved supplier network.</p></article>
+                <article class="card trust-card">💸 <strong>Refund Guarantee</strong><p>Clear return/refund support.</p></article>
+                <article class="card trust-card">📦 <strong>Cash on Delivery</strong><p>COD options available in selected areas.</p></article>
+                <article class="card trust-card">⚡ <strong>Fast Delivery</strong><p>Express handling for urgent orders.</p></article>
+                <article class="card trust-card">🔒 <strong>Safe Payment</strong><p>Secure and transparent billing process.</p></article>
+                <article class="card trust-card">🤝 <strong>24/7 Support</strong><p>Guidance from sourcing to delivery.</p></article>
+            </div>
+        </div>
+    </div>
+</section>
+
 <div id="floating-cart-bar" class="floating-cart-bar" role="region" aria-label="Floating cart summary">
     <div class="floating-cart-main">
         <div>
