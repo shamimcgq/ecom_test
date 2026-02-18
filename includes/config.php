@@ -9,6 +9,7 @@ function getSiteConfig(): array
         'logo_url' => '',
         'whatsapp_number' => '8613800138000',
         'fb_pixel_id' => '',
+        'fb_pixel_token' => '',
         'banner_heading' => 'Source, Ship, and Scale with Confidence',
         'banner_subheading' => 'From wholesale sourcing to door-to-door delivery, we make China imports simple.',
         'banner_image' => 'https://images.unsplash.com/photo-1565891741441-64926e441838?auto=format&fit=crop&w=1500&q=80',

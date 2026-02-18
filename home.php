@@ -91,7 +91,7 @@ require_once __DIR__ . '/includes/header.php';
                     <p><?php echo htmlspecialchars($product['short_description']); ?></p>
                     <p class="price">৳<?php echo number_format((float) $product['price_bdt'], 0); ?></p>
                     <div class="product-actions">
-                        <button type="button" class="icon-btn add-cart-btn" data-id="<?php echo (int) $product['id']; ?>" data-name="<?php echo htmlspecialchars($product['title']); ?>" data-price="<?php echo (float) $product['price_bdt']; ?>"><i class="fa-solid fa-cart-plus"></i> Add to Cart</button>
+                        <button type="button" class="icon-btn add-cart-btn" data-id="<?php echo (int) $product['id']; ?>" data-name="<?php echo htmlspecialchars($product['title']); ?>" data-price="<?php echo (float) $product['price_bdt']; ?>"><i class="fa-solid fa-cart-plus"></i> + Cart</button>
                         <button type="button" class="buy-btn buy-now-btn" data-id="<?php echo (int) $product['id']; ?>" data-name="<?php echo htmlspecialchars($product['title']); ?>" data-price="<?php echo (float) $product['price_bdt']; ?>">Buy Now</button>
                     </div>
                 </article>
@@ -427,6 +427,10 @@ require_once __DIR__ . '/includes/header.php';
 
         const payload = Object.fromEntries(new FormData(orderForm).entries());
         payload.cart_items = currentOrderItems.map((item) => ({ id: item.id, qty: item.qty }));
+        payload.event_id = generateEventId('purchase');
+        payload.event_source_url = window.location.href;
+        payload.fbc = getFbCookie('_fbc');
+        payload.fbp = getFbCookie('_fbp');
 
         try {
             const response = await fetch('submit_order.php', {
@@ -442,6 +446,9 @@ require_once __DIR__ . '/includes/header.php';
             }
 
             track('Purchase', { value: data.grand_total_bdt || 0 });
+            if (typeof window.fbq === 'function') {
+                window.fbq('track', 'Purchase', {currency: 'BDT', value: Number(data.grand_total_bdt || 0)}, {eventID: data.event_id || payload.event_id});
+            }
             showToast(data.message || 'Order submitted successfully', 'success');
 
             const usingCartItems = currentOrderItems.length === cart.length && currentOrderItems.every((item, idx) => cart[idx] && cart[idx].id === item.id);

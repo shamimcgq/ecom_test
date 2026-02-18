@@ -74,7 +74,7 @@ require_once __DIR__ . '/includes/header.php';
             </div>
 
             <div class="product-actions">
-                <button class="icon-btn detail-add-cart" data-id="<?php echo (int) $product['id']; ?>" data-name="<?php echo htmlspecialchars($product['title']); ?>" data-price="<?php echo (float) $product['price_bdt']; ?>" type="button"><i class="fa-solid fa-cart-plus"></i> Add to Cart</button>
+                <button class="icon-btn detail-add-cart" data-id="<?php echo (int) $product['id']; ?>" data-name="<?php echo htmlspecialchars($product['title']); ?>" data-price="<?php echo (float) $product['price_bdt']; ?>" type="button"><i class="fa-solid fa-cart-plus"></i> + Cart</button>
             </div>
         </article>
     </div>
@@ -286,6 +286,10 @@ require_once __DIR__ . '/includes/header.php';
 
         const payload = Object.fromEntries(new FormData(orderForm).entries());
         payload.cart_items = currentOrderItems.map((item) => ({ id: item.id, qty: item.qty }));
+        payload.event_id = generateEventId('purchase');
+        payload.event_source_url = window.location.href;
+        payload.fbc = getFbCookie('_fbc');
+        payload.fbp = getFbCookie('_fbp');
 
         try {
             const response = await fetch('submit_order.php', {
@@ -299,6 +303,9 @@ require_once __DIR__ . '/includes/header.php';
                 return;
             }
             track('Purchase', { value: data.grand_total_bdt || 0 });
+            if (typeof window.fbq === 'function') {
+                window.fbq('track', 'Purchase', {currency: 'BDT', value: Number(data.grand_total_bdt || 0)}, {eventID: data.event_id || payload.event_id});
+            }
             showToast(data.message || 'Order submitted successfully');
             closeOrderModal();
             orderForm.reset();

@@ -44,5 +44,29 @@ function initializeDatabase(PDO $pdo): void
     }
 
     $pdo->exec($schema);
+    applyDbMigrations($pdo);
     $initialized = true;
+}
+
+function columnExists(PDO $pdo, string $table, string $column): bool
+{
+    $stmt = $pdo->prepare('SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = :table_name AND COLUMN_NAME = :column_name LIMIT 1');
+    $stmt->execute(['table_name' => $table, 'column_name' => $column]);
+    return (bool) $stmt->fetchColumn();
+}
+
+function applyDbMigrations(PDO $pdo): void
+{
+    if (!columnExists($pdo, 'products', 'slug')) {
+        $pdo->exec("ALTER TABLE products ADD COLUMN slug VARCHAR(255) NOT NULL DEFAULT '' AFTER id");
+        $pdo->exec('ALTER TABLE products ADD UNIQUE KEY uniq_products_slug (slug)');
+    }
+
+    if (!columnExists($pdo, 'products', 'stock_qty')) {
+        $pdo->exec('ALTER TABLE products ADD COLUMN stock_qty INT NOT NULL DEFAULT 0 AFTER cost_bdt');
+    }
+
+    if (!columnExists($pdo, 'site_config', 'config_key')) {
+        throw new RuntimeException('site_config table is invalid');
+    }
 }

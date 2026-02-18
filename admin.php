@@ -13,6 +13,32 @@ $pageTitle = 'Admin Panel | ' . $siteConfig['site_name'];
 $notice = '';
 $tab = $_GET['tab'] ?? 'orders';
 
+function uploadProductImage(string $inputName): ?string
+{
+    if (empty($_FILES[$inputName]['tmp_name']) || !is_uploaded_file($_FILES[$inputName]['tmp_name'])) {
+        return null;
+    }
+
+    $dir = __DIR__ . '/data/productsimgs';
+    if (!is_dir($dir)) {
+        mkdir($dir, 0775, true);
+    }
+
+    $ext = strtolower(pathinfo((string) ($_FILES[$inputName]['name'] ?? ''), PATHINFO_EXTENSION));
+    $allowed = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+    if (!in_array($ext, $allowed, true)) {
+        return null;
+    }
+
+    $name = 'product-' . date('Ymd-His') . '-' . bin2hex(random_bytes(4)) . '.' . $ext;
+    $dest = $dir . '/' . $name;
+    if (!move_uploaded_file($_FILES[$inputName]['tmp_name'], $dest)) {
+        return null;
+    }
+
+    return 'data/productsimgs/' . $name;
+}
+
 if (isset($_GET['logout'])) {
     session_destroy();
     header('Location: admin.php');
@@ -82,6 +108,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') !== 'login
         $siteConfig['logo_url'] = trim($_POST['logo_url'] ?? $siteConfig['logo_url']);
         $siteConfig['whatsapp_number'] = trim($_POST['whatsapp_number'] ?? $siteConfig['whatsapp_number']);
         $siteConfig['fb_pixel_id'] = trim($_POST['fb_pixel_id'] ?? $siteConfig['fb_pixel_id']);
+        $siteConfig['fb_pixel_token'] = trim($_POST['fb_pixel_token'] ?? $siteConfig['fb_pixel_token']);
         $siteConfig['banner_heading'] = trim($_POST['banner_heading'] ?? $siteConfig['banner_heading']);
         $siteConfig['banner_subheading'] = trim($_POST['banner_subheading'] ?? $siteConfig['banner_subheading']);
         $siteConfig['banner_image'] = trim($_POST['banner_image'] ?? $siteConfig['banner_image']);
@@ -91,15 +118,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') !== 'login
     }
 
     if ($action === 'add_product' && $canManageProducts) {
+        $uploadedImage = uploadProductImage('product_image');
         $newProduct = [
             'title' => trim($_POST['title'] ?? 'New Product'),
             'price_bdt' => (float) ($_POST['price_bdt'] ?? 0),
             'offer_price_bdt' => (float) ($_POST['offer_price_bdt'] ?? 0),
             'cost_bdt' => (float) ($_POST['cost_bdt'] ?? 0),
+            'stock_qty' => (int) ($_POST['stock_qty'] ?? 0),
             'short_description' => trim($_POST['short_description'] ?? ''),
             'description_paragraphs' => [trim($_POST['description'] ?? '')],
-            'images' => [trim($_POST['image'] ?? 'https://picsum.photos/seed/new-product/800/500')],
-            'detail_images' => [['url' => trim($_POST['image'] ?? 'https://picsum.photos/seed/new-product/700/450'), 'caption' => 'Primary view']],
+            'images' => [$uploadedImage ?: 'https://picsum.photos/seed/new-product/800/500'],
+            'detail_images' => [['url' => ($uploadedImage ?: 'https://picsum.photos/seed/new-product/700/450'), 'caption' => 'Primary view']],
             'variations' => [
                 'colors' => array_values(array_filter(array_map('trim', explode(',', (string) ($_POST['colors'] ?? ''))))),
                 'sizes' => array_values(array_filter(array_map('trim', explode(',', (string) ($_POST['sizes'] ?? ''))))),
@@ -107,6 +136,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') !== 'login
         ];
         addProduct($newProduct);
         $notice = 'Product added.';
+        $tab = 'products';
+    }
+
+    if ($action === 'edit_product' && $canManageProducts) {
+        $id = (int) ($_POST['id'] ?? 0);
+        $existing = findProductById($id);
+        if ($existing) {
+            $uploadedImage = uploadProductImage('product_image');
+            $image = $uploadedImage ?: (string) (($existing['images'][0] ?? 'https://picsum.photos/seed/new-product/800/500'));
+            updateProduct($id, [
+                'title' => trim($_POST['title'] ?? $existing['title']),
+                'price_bdt' => (float) ($_POST['price_bdt'] ?? $existing['price_bdt']),
+                'offer_price_bdt' => (float) ($_POST['offer_price_bdt'] ?? ($existing['offer_price_bdt'] ?? 0)),
+                'cost_bdt' => (float) ($_POST['cost_bdt'] ?? $existing['cost_bdt']),
+                'stock_qty' => (int) ($_POST['stock_qty'] ?? ($existing['stock_qty'] ?? 0)),
+                'short_description' => trim($_POST['short_description'] ?? $existing['short_description']),
+                'description_paragraphs' => [trim($_POST['description'] ?? (($existing['description_paragraphs'][0] ?? '')))],
+                'images' => [$image],
+                'detail_images' => [['url' => $image, 'caption' => 'Primary view']],
+                'variations' => [
+                    'colors' => array_values(array_filter(array_map('trim', explode(',', (string) ($_POST['colors'] ?? implode(', ', $existing['variations']['colors'] ?? [])))))),
+                    'sizes' => array_values(array_filter(array_map('trim', explode(',', (string) ($_POST['sizes'] ?? implode(', ', $existing['variations']['sizes'] ?? [])))))),
+                ],
+            ]);
+            $notice = 'Product updated.';
+        }
         $tab = 'products';
     }
 
@@ -189,14 +244,15 @@ require_once __DIR__ . '/includes/header.php';
         <?php if ($tab === 'products' && $canManageProducts): ?>
             <div class="card admin-block">
                 <h3>Add Product</h3>
-                <form method="post">
+                <form method="post" enctype="multipart/form-data">
                     <input type="hidden" name="action" value="add_product">
                     <div class="grid two-col">
                         <div class="form-group"><label>Title</label><input name="title" required></div>
-                        <div class="form-group"><label>Image URL</label><input name="image" required></div>
+                        <div class="form-group"><label>Product Image Upload</label><input name="product_image" type="file" accept="image/*"></div>
                         <div class="form-group"><label>Price (BDT)</label><input name="price_bdt" type="number" step="0.01" required></div>
                         <div class="form-group"><label>Offer Price (BDT)</label><input name="offer_price_bdt" type="number" step="0.01"></div>
                         <div class="form-group"><label>Cost (BDT)</label><input name="cost_bdt" type="number" step="0.01" required></div>
+                        <div class="form-group"><label>Stock Qty</label><input name="stock_qty" type="number" step="1" min="0" value="0" required></div>
                         <div class="form-group"><label>Colors (comma separated)</label><input name="colors"></div>
                         <div class="form-group"><label>Sizes (comma separated)</label><input name="sizes"></div>
                     </div>
@@ -214,6 +270,27 @@ require_once __DIR__ . '/includes/header.php';
                         <div>
                             <strong><?php echo htmlspecialchars($product['title']); ?></strong>
                             <p class="muted">Price: ৳<?php echo number_format((float) $product['price_bdt'], 0); ?> | Offer: ৳<?php echo number_format((float) ($product['offer_price_bdt'] ?? 0), 0); ?> | Cost: ৳<?php echo number_format((float) $product['cost_bdt'], 0); ?></p>
+                            <p class="muted">Stock: <?php echo (int) ($product['stock_qty'] ?? 0); ?></p>
+                            <details>
+                                <summary>Edit Product</summary>
+                                <form method="post" enctype="multipart/form-data" class="card">
+                                    <input type="hidden" name="action" value="edit_product">
+                                    <input type="hidden" name="id" value="<?php echo (int) $product['id']; ?>">
+                                    <div class="grid two-col">
+                                        <div class="form-group"><label>Title</label><input name="title" value="<?php echo htmlspecialchars($product['title']); ?>" required></div>
+                                        <div class="form-group"><label>Image Upload</label><input name="product_image" type="file" accept="image/*"></div>
+                                        <div class="form-group"><label>Price</label><input name="price_bdt" type="number" step="0.01" value="<?php echo (float) $product['price_bdt']; ?>" required></div>
+                                        <div class="form-group"><label>Offer Price</label><input name="offer_price_bdt" type="number" step="0.01" value="<?php echo (float) ($product['offer_price_bdt'] ?? 0); ?>"></div>
+                                        <div class="form-group"><label>Cost</label><input name="cost_bdt" type="number" step="0.01" value="<?php echo (float) $product['cost_bdt']; ?>" required></div>
+                                        <div class="form-group"><label>Stock Qty</label><input name="stock_qty" type="number" min="0" value="<?php echo (int) ($product['stock_qty'] ?? 0); ?>" required></div>
+                                        <div class="form-group"><label>Colors</label><input name="colors" value="<?php echo htmlspecialchars(implode(', ', $product['variations']['colors'] ?? [])); ?>"></div>
+                                        <div class="form-group"><label>Sizes</label><input name="sizes" value="<?php echo htmlspecialchars(implode(', ', $product['variations']['sizes'] ?? [])); ?>"></div>
+                                    </div>
+                                    <div class="form-group"><label>Short Description</label><textarea name="short_description" required><?php echo htmlspecialchars($product['short_description'] ?? ''); ?></textarea></div>
+                                    <div class="form-group"><label>Description</label><textarea name="description"><?php echo htmlspecialchars($product['description_paragraphs'][0] ?? ''); ?></textarea></div>
+                                    <button class="btn" type="submit">Save Changes</button>
+                                </form>
+                            </details>
                         </div>
                         <form method="post" class="inline-form">
                             <input type="hidden" name="action" value="delete_product">
@@ -234,7 +311,7 @@ require_once __DIR__ . '/includes/header.php';
             <div class="card admin-block">
                 <h3>Order List</h3>
                 <div class="filter-buttons">
-                    <?php foreach (['all','pending','confirmed','delivered','cancelled'] as $status): ?>
+                    <?php foreach (['all','pending','confirmed','delivered','cancelled','returned'] as $status): ?>
                         <a class="filter-btn <?php echo $filterStatus === $status ? 'active' : ''; ?>" href="admin.php?tab=orders&status=<?php echo $status; ?>"><?php echo ucfirst($status); ?></a>
                     <?php endforeach; ?>
                 </div>
@@ -250,16 +327,21 @@ require_once __DIR__ . '/includes/header.php';
                         <?php $sl = 1; foreach ($filteredOrders as $order): ?>
                             <?php $items = is_array($order['items'] ?? null) ? $order['items'] : []; ?>
                             <?php if (!$items): $items = [['title' => $order['product_name'] ?? 'N/A','unit_price_bdt' => $order['amount_bdt'] ?? 0,'qty' => 1]]; endif; ?>
-                            <?php foreach ($items as $item): ?>
                                 <tr>
                                     <td><?php echo $sl++; ?></td>
                                     <td>#<?php echo (int) ($order['id'] ?? 0); ?></td>
                                     <td><?php echo htmlspecialchars($order['customer_name'] ?? $order['customer'] ?? 'Customer'); ?></td>
                                     <td><?php echo htmlspecialchars($order['phone'] ?? '-'); ?></td>
                                     <td><?php echo htmlspecialchars($order['email'] ?? '-'); ?></td>
-                                    <td><?php echo htmlspecialchars($item['title'] ?? 'Item'); ?></td>
-                                    <td>৳<?php echo number_format((float) ($item['unit_price_bdt'] ?? 0), 0); ?></td>
-                                    <td><?php echo (int) ($item['qty'] ?? 1); ?></td>
+                                    <td>
+                                        <ul class="order-products-list">
+                                            <?php foreach ($items as $item): ?>
+                                                <li><?php echo htmlspecialchars($item['title'] ?? 'Item'); ?> (x<?php echo (int) ($item['qty'] ?? 1); ?>)</li>
+                                            <?php endforeach; ?>
+                                        </ul>
+                                    </td>
+                                    <td>৳<?php echo number_format((float) ($order['subtotal_bdt'] ?? $order['amount_bdt'] ?? 0), 0); ?></td>
+                                    <td>-</td>
                                     <td>৳<?php echo number_format((float) ($order['delivery_charge_bdt'] ?? 0), 0); ?></td>
                                     <td>৳<?php echo number_format((float) ($order['grand_total_bdt'] ?? $order['amount_bdt'] ?? 0), 0); ?></td>
                                     <td><button type="button" class="icon-btn small">Pickup Request</button></td>
@@ -268,7 +350,7 @@ require_once __DIR__ . '/includes/header.php';
                                             <input type="hidden" name="action" value="update_order_status">
                                             <input type="hidden" name="id" value="<?php echo (int) ($order['id'] ?? 0); ?>">
                                             <select name="status">
-                                                <?php foreach (['pending','confirmed','delivered','cancelled'] as $status): ?>
+                                                <?php foreach (['pending','confirmed','delivered','cancelled','returned'] as $status): ?>
                                                     <option value="<?php echo $status; ?>" <?php echo (($order['status'] ?? '') === $status) ? 'selected' : ''; ?>><?php echo ucfirst($status); ?></option>
                                                 <?php endforeach; ?>
                                             </select>
@@ -276,7 +358,6 @@ require_once __DIR__ . '/includes/header.php';
                                         </form>
                                     </td>
                                 </tr>
-                            <?php endforeach; ?>
                         <?php endforeach; ?>
                         </tbody>
                     </table>
@@ -302,6 +383,7 @@ require_once __DIR__ . '/includes/header.php';
                     <div class="form-group"><label>Logo URL</label><input type="url" name="logo_url" value="<?php echo htmlspecialchars($siteConfig['logo_url']); ?>"></div>
                     <div class="form-group"><label>WhatsApp Number</label><input type="text" name="whatsapp_number" value="<?php echo htmlspecialchars($siteConfig['whatsapp_number']); ?>"></div>
                     <div class="form-group"><label>Facebook Pixel ID</label><input type="text" name="fb_pixel_id" value="<?php echo htmlspecialchars($siteConfig['fb_pixel_id'] ?? ''); ?>"></div>
+                    <div class="form-group"><label>Facebook Pixel API Token</label><input type="text" name="fb_pixel_token" value="<?php echo htmlspecialchars($siteConfig['fb_pixel_token'] ?? ''); ?>"></div>
                     <div class="form-group"><label>Banner Heading</label><input type="text" name="banner_heading" value="<?php echo htmlspecialchars($siteConfig['banner_heading']); ?>"></div>
                     <div class="form-group"><label>Banner Subheading</label><textarea name="banner_subheading"><?php echo htmlspecialchars($siteConfig['banner_subheading']); ?></textarea></div>
                     <div class="form-group"><label>Banner Image URL</label><input type="url" name="banner_image" value="<?php echo htmlspecialchars($siteConfig['banner_image']); ?>"></div>

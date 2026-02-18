@@ -44,6 +44,7 @@ function defaultProducts(): array
         'title' => 'Wireless Earbuds Pro',
         'price_bdt' => 2200,
         'cost_bdt' => 1450,
+        'stock_qty' => 120,
         'short_description' => 'Low-latency earbuds with ANC and charging case.',
         'description_paragraphs' => [
             'These wireless earbuds are built for daily use, offering clear audio and stable Bluetooth connectivity for both music and calls.',
@@ -76,6 +77,7 @@ function seedProducts(): array
             'title' => "Trending Product {$i}",
             'price_bdt' => 500 + ($i * 95),
             'cost_bdt' => 300 + ($i * 60),
+            'stock_qty' => 200,
             'short_description' => 'Quality checked sourcing item for retail and wholesale clients.',
             'description_paragraphs' => [
                 'Reliable product sourced from trusted suppliers in China.',
@@ -119,6 +121,7 @@ function normalizeProductRow(array $row): array
         'price_bdt' => (float) $row['price_bdt'],
         'offer_price_bdt' => isset($row['offer_price_bdt']) ? (float) $row['offer_price_bdt'] : 0,
         'cost_bdt' => (float) $row['cost_bdt'],
+        'stock_qty' => (int) ($row['stock_qty'] ?? 0),
         'short_description' => (string) ($row['short_description'] ?? ''),
         'description_paragraphs' => decodeJsonField($row['description_paragraphs'] ?? '[]'),
         'images' => decodeJsonField($row['images'] ?? '[]'),
@@ -152,8 +155,8 @@ function insertProductRow(PDO $pdo, array $product): void
     }
 
     $stmt = $pdo->prepare(
-        'INSERT INTO products (id, slug, title, price_bdt, offer_price_bdt, cost_bdt, short_description, description_paragraphs, images, detail_images, colors, sizes)
-         VALUES (:id, :slug, :title, :price_bdt, :offer_price_bdt, :cost_bdt, :short_description, :description_paragraphs, :images, :detail_images, :colors, :sizes)'
+        'INSERT INTO products (id, slug, title, price_bdt, offer_price_bdt, cost_bdt, stock_qty, short_description, description_paragraphs, images, detail_images, colors, sizes)
+         VALUES (:id, :slug, :title, :price_bdt, :offer_price_bdt, :cost_bdt, :stock_qty, :short_description, :description_paragraphs, :images, :detail_images, :colors, :sizes)'
     );
 
     $stmt->execute([
@@ -163,6 +166,7 @@ function insertProductRow(PDO $pdo, array $product): void
         'price_bdt' => (float) ($product['price_bdt'] ?? 0),
         'offer_price_bdt' => (float) ($product['offer_price_bdt'] ?? 0),
         'cost_bdt' => (float) ($product['cost_bdt'] ?? 0),
+        'stock_qty' => (int) ($product['stock_qty'] ?? 0),
         'short_description' => (string) ($product['short_description'] ?? ''),
         'description_paragraphs' => json_encode(array_values($product['description_paragraphs'] ?? []), JSON_UNESCAPED_SLASHES),
         'images' => json_encode(array_values($product['images'] ?? []), JSON_UNESCAPED_SLASHES),
@@ -177,8 +181,8 @@ function addProduct(array $product): int
     $pdo = db();
     $title = (string) ($product['title'] ?? 'Product');
     $stmt = $pdo->prepare(
-        'INSERT INTO products (slug, title, price_bdt, offer_price_bdt, cost_bdt, short_description, description_paragraphs, images, detail_images, colors, sizes)
-         VALUES (:slug, :title, :price_bdt, :offer_price_bdt, :cost_bdt, :short_description, :description_paragraphs, :images, :detail_images, :colors, :sizes)'
+        'INSERT INTO products (slug, title, price_bdt, offer_price_bdt, cost_bdt, stock_qty, short_description, description_paragraphs, images, detail_images, colors, sizes)
+         VALUES (:slug, :title, :price_bdt, :offer_price_bdt, :cost_bdt, :stock_qty, :short_description, :description_paragraphs, :images, :detail_images, :colors, :sizes)'
     );
 
     $stmt->execute([
@@ -187,6 +191,7 @@ function addProduct(array $product): int
         'price_bdt' => (float) ($product['price_bdt'] ?? 0),
         'offer_price_bdt' => (float) ($product['offer_price_bdt'] ?? 0),
         'cost_bdt' => (float) ($product['cost_bdt'] ?? 0),
+        'stock_qty' => (int) ($product['stock_qty'] ?? 0),
         'short_description' => (string) ($product['short_description'] ?? ''),
         'description_paragraphs' => json_encode(array_values($product['description_paragraphs'] ?? []), JSON_UNESCAPED_SLASHES),
         'images' => json_encode(array_values($product['images'] ?? []), JSON_UNESCAPED_SLASHES),
@@ -241,4 +246,44 @@ function findProductBySlug(string $slug): ?array
     $row = $stmt->fetch();
 
     return $row ? normalizeProductRow($row) : null;
+}
+
+
+function updateProduct(int $id, array $product): bool
+{
+    $pdo = db();
+    $current = findProductById($id);
+    if (!$current) {
+        return false;
+    }
+
+    $title = (string) ($product['title'] ?? $current['title']);
+    $slug = (string) ($product['slug'] ?? uniqueProductSlug($pdo, $title, $id));
+
+    $stmt = $pdo->prepare(
+        'UPDATE products SET slug = :slug, title = :title, price_bdt = :price_bdt, offer_price_bdt = :offer_price_bdt, cost_bdt = :cost_bdt, stock_qty = :stock_qty, short_description = :short_description, description_paragraphs = :description_paragraphs, images = :images, detail_images = :detail_images, colors = :colors, sizes = :sizes WHERE id = :id'
+    );
+
+    return $stmt->execute([
+        'id' => $id,
+        'slug' => $slug,
+        'title' => $title,
+        'price_bdt' => (float) ($product['price_bdt'] ?? $current['price_bdt']),
+        'offer_price_bdt' => (float) ($product['offer_price_bdt'] ?? ($current['offer_price_bdt'] ?? 0)),
+        'cost_bdt' => (float) ($product['cost_bdt'] ?? $current['cost_bdt']),
+        'stock_qty' => (int) ($product['stock_qty'] ?? ($current['stock_qty'] ?? 0)),
+        'short_description' => (string) ($product['short_description'] ?? $current['short_description']),
+        'description_paragraphs' => json_encode(array_values($product['description_paragraphs'] ?? $current['description_paragraphs'] ?? []), JSON_UNESCAPED_SLASHES),
+        'images' => json_encode(array_values($product['images'] ?? $current['images'] ?? []), JSON_UNESCAPED_SLASHES),
+        'detail_images' => json_encode(array_values($product['detail_images'] ?? $current['detail_images'] ?? []), JSON_UNESCAPED_SLASHES),
+        'colors' => json_encode(array_values($product['variations']['colors'] ?? $current['variations']['colors'] ?? []), JSON_UNESCAPED_SLASHES),
+        'sizes' => json_encode(array_values($product['variations']['sizes'] ?? $current['variations']['sizes'] ?? []), JSON_UNESCAPED_SLASHES),
+    ]);
+}
+
+function adjustProductStock(int $id, int $delta): bool
+{
+    $pdo = db();
+    $stmt = $pdo->prepare('UPDATE products SET stock_qty = GREATEST(stock_qty + :delta, 0) WHERE id = :id');
+    return $stmt->execute(['delta' => $delta, 'id' => $id]);
 }

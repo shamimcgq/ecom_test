@@ -2,6 +2,7 @@
 require_once __DIR__ . '/includes/products.php';
 require_once __DIR__ . '/includes/orders.php';
 require_once __DIR__ . '/includes/shipping.php';
+require_once __DIR__ . '/includes/pixel.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
@@ -25,6 +26,10 @@ $color = trim((string) ($input['color'] ?? ''));
 $notes = trim((string) ($input['notes'] ?? ''));
 $deliveryZone = trim((string) ($input['delivery_zone'] ?? 'inside_dhaka'));
 $cartItems = $input['cart_items'] ?? [];
+$eventId = trim((string) ($input['event_id'] ?? ''));
+$eventSourceUrl = trim((string) ($input['event_source_url'] ?? ''));
+$fbc = trim((string) ($input['fbc'] ?? ''));
+$fbp = trim((string) ($input['fbp'] ?? ''));
 
 if ($name === '' || $phone === '' || $address === '' || !is_array($cartItems) || empty($cartItems)) {
     http_response_code(422);
@@ -95,10 +100,19 @@ $order = addOrder([
     'status' => 'pending',
 ]);
 
+$finalEventId = $eventId !== '' ? $eventId : ('order-' . ($order['id'] ?? ''));
+sendServerSidePurchaseEvent($order, [
+    'event_id' => $finalEventId,
+    'event_source_url' => $eventSourceUrl,
+    'fbc' => $fbc,
+    'fbp' => $fbp,
+]);
+
 echo json_encode([
     'success' => true,
     'message' => 'Order submitted successfully. Our team will contact you shortly.',
     'subtotal_bdt' => round($subtotal),
     'delivery_charge_bdt' => round($deliveryCharge),
     'grand_total_bdt' => round($grandTotal),
+    'event_id' => $finalEventId,
 ]);

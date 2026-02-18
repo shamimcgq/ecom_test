@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS products (
     price_bdt DECIMAL(10,2) NOT NULL,
     offer_price_bdt DECIMAL(10,2) NULL,
     cost_bdt DECIMAL(10,2) NOT NULL,
+    stock_qty INT NOT NULL DEFAULT 0,
     short_description TEXT,
     description_paragraphs JSON,
     images JSON,

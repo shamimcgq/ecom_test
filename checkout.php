@@ -68,6 +68,15 @@ require_once __DIR__ . '/includes/header.php';
 
     function track(eventName, params = {}) { if (typeof window.fbq === 'function') window.fbq('trackCustom', eventName, params); }
 
+    function getFbCookie(name) {
+        const v = document.cookie.split('; ').find((row) => row.startsWith(name + '='));
+        return v ? decodeURIComponent(v.split('=')[1] || '') : '';
+    }
+
+    function generateEventId(prefix = 'evt') {
+        return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+    }
+
     function loadCart() {
         try {
             const raw = JSON.parse(localStorage.getItem('ch_cart') || '[]');
@@ -137,6 +146,10 @@ require_once __DIR__ . '/includes/header.php';
 
         const payload = Object.fromEntries(new FormData(form).entries());
         payload.cart_items = cart.map((i) => ({ id: Number(i.id), qty: Number(i.qty) }));
+        payload.event_id = generateEventId('purchase');
+        payload.event_source_url = window.location.href;
+        payload.fbc = getFbCookie('_fbc');
+        payload.fbp = getFbCookie('_fbp');
 
         const response = await fetch('submit_order.php', {
             method: 'POST',
@@ -149,6 +162,9 @@ require_once __DIR__ . '/includes/header.php';
 
         if (data.success) {
             track('Purchase', { value: data.grand_total_bdt || 0 });
+            if (typeof window.fbq === 'function') {
+                window.fbq('track', 'Purchase', {currency: 'BDT', value: Number(data.grand_total_bdt || 0)}, {eventID: data.event_id || payload.event_id});
+            }
             localStorage.setItem('ch_cart', '[]');
             cart = [];
             renderSummary();
