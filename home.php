@@ -215,6 +215,15 @@ require_once __DIR__ . '/includes/header.php';
         if (typeof window.fbq === 'function') window.fbq('trackCustom', eventName, params);
     }
 
+    function getFbCookie(name) {
+        const v = document.cookie.split('; ').find((row) => row.startsWith(name + '='));
+        return v ? decodeURIComponent(v.split('=')[1] || '') : '';
+    }
+
+    function generateEventId(prefix = 'evt') {
+        return `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+    }
+
     function showToast(message, type = 'success') {
         toast.textContent = message;
         toast.className = `toast show ${type}`;
