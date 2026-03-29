@@ -1,0 +1,20 @@
+[
+    {
+        "username": "superadmin",
+        "password_hash": "$2y$12$JX86Xw0rzihT0Y7BjjtEceMKHL12dz7FT/HjTNjPNdHaue5nT3y52",
+        "role": "admin",
+        "name": "Super Admin"
+    },
+    {
+        "username": "manager",
+        "password_hash": "$2y$12$HoexBPu8zwgXqjGBJOqF../w21Im91F8/xsvTJkdVei1yD6mDVqE6",
+        "role": "manager",
+        "name": "Store Manager"
+    },
+    {
+        "username": "ops",
+        "password_hash": "$2y$12$lNt1GcDZJaW.GG1dCFkOfOcokVyM6yJKa9bVOM6cwLKF6Gmg3gMsS",
+        "role": "staff",
+        "name": "Ops Staff"
+    }
+]

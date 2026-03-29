@@ -1,0 +1,76 @@
+CREATE TABLE IF NOT EXISTS site_config (
+    config_key VARCHAR(64) PRIMARY KEY,
+    config_value TEXT NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS shipping_settings (
+    id TINYINT UNSIGNED PRIMARY KEY,
+    free_shipping_threshold_bdt DECIMAL(10,2) NOT NULL,
+    inside_dhaka_charge_bdt DECIMAL(10,2) NOT NULL,
+    outside_dhaka_charge_bdt DECIMAL(10,2) NOT NULL,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS products (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    slug VARCHAR(255) NOT NULL UNIQUE,
+    title VARCHAR(255) NOT NULL,
+    price_bdt DECIMAL(10,2) NOT NULL,
+    offer_price_bdt DECIMAL(10,2) NULL,
+    cost_bdt DECIMAL(10,2) NOT NULL,
+    stock_qty INT NOT NULL DEFAULT 0,
+    short_description TEXT,
+    description_paragraphs JSON,
+    images JSON,
+    detail_images JSON,
+    colors JSON,
+    sizes JSON,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS admin_users (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(64) NOT NULL UNIQUE,
+    password_hash VARCHAR(255) NOT NULL,
+    role VARCHAR(32) NOT NULL,
+    name VARCHAR(128) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS users (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(128) NOT NULL,
+    email VARCHAR(190) NOT NULL,
+    role VARCHAR(32) NOT NULL DEFAULT 'customer',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS orders (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    customer_name VARCHAR(128) NOT NULL,
+    phone VARCHAR(64) NOT NULL,
+    address TEXT NOT NULL,
+    email VARCHAR(190) NULL,
+    size VARCHAR(64) NULL,
+    color VARCHAR(64) NULL,
+    notes TEXT NULL,
+    delivery_zone VARCHAR(32) NOT NULL DEFAULT 'inside_dhaka',
+    delivery_charge_bdt DECIMAL(10,2) NOT NULL DEFAULT 0,
+    subtotal_bdt DECIMAL(10,2) NOT NULL DEFAULT 0,
+    grand_total_bdt DECIMAL(10,2) NOT NULL DEFAULT 0,
+    status VARCHAR(32) NOT NULL DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE IF NOT EXISTS order_items (
+    id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    order_id INT UNSIGNED NOT NULL,
+    product_id INT UNSIGNED NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    qty INT UNSIGNED NOT NULL,
+    unit_price_bdt DECIMAL(10,2) NOT NULL,
+    line_total_bdt DECIMAL(10,2) NOT NULL,
+    CONSTRAINT fk_order_items_order FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+    INDEX idx_order_items_order_id (order_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
