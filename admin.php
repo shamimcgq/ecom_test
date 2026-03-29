@@ -13,10 +13,10 @@ $pageTitle = 'Admin Panel | ' . $siteConfig['site_name'];
 $notice = '';
 $tab = $_GET['tab'] ?? 'orders';
 
-function uploadProductImage(string $inputName): ?string
+function uploadProductImages(string $inputName): array
 {
-    if (empty($_FILES[$inputName]['tmp_name']) || !is_uploaded_file($_FILES[$inputName]['tmp_name'])) {
-        return null;
+    if (empty($_FILES[$inputName]) || !isset($_FILES[$inputName]['tmp_name'])) {
+        return [];
     }
 
     $dir = __DIR__ . '/data/productsimgs';
@@ -24,19 +24,43 @@ function uploadProductImage(string $inputName): ?string
         mkdir($dir, 0775, true);
     }
 
-    $ext = strtolower(pathinfo((string) ($_FILES[$inputName]['name'] ?? ''), PATHINFO_EXTENSION));
     $allowed = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
-    if (!in_array($ext, $allowed, true)) {
-        return null;
+    $uploaded = [];
+    $tmpNames = (array) $_FILES[$inputName]['tmp_name'];
+    $originalNames = (array) ($_FILES[$inputName]['name'] ?? []);
+
+    foreach ($tmpNames as $index => $tmpName) {
+        if (!$tmpName || !is_uploaded_file($tmpName)) {
+            continue;
+        }
+
+        $ext = strtolower(pathinfo((string) ($originalNames[$index] ?? ''), PATHINFO_EXTENSION));
+        if (!in_array($ext, $allowed, true)) {
+            continue;
+        }
+
+        $name = 'product-' . date('Ymd-His') . '-' . bin2hex(random_bytes(4)) . '.' . $ext;
+        $dest = $dir . '/' . $name;
+        if (move_uploaded_file($tmpName, $dest)) {
+            $uploaded[] = 'data/productsimgs/' . $name;
+        }
     }
 
-    $name = 'product-' . date('Ymd-His') . '-' . bin2hex(random_bytes(4)) . '.' . $ext;
-    $dest = $dir . '/' . $name;
-    if (!move_uploaded_file($_FILES[$inputName]['tmp_name'], $dest)) {
-        return null;
+    return $uploaded;
+}
+
+function buildDetailImages(array $uploadedDetailImages, array $captions): array
+{
+    $detailImages = [];
+    foreach ($uploadedDetailImages as $index => $url) {
+        $caption = trim((string) ($captions[$index] ?? ''));
+        $detailImages[] = [
+            'url' => $url,
+            'caption' => $caption !== '' ? $caption : 'Product detail',
+        ];
     }
 
-    return 'data/productsimgs/' . $name;
+    return $detailImages;
 }
 
 if (isset($_GET['logout'])) {
@@ -118,7 +142,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') !== 'login
     }
 
     if ($action === 'add_product' && $canManageProducts) {
-        $uploadedImage = uploadProductImage('product_image');
+        $uploadedPrimaryImages = uploadProductImages('product_images');
+        $uploadedDetailImages = uploadProductImages('detail_images');
+        $detailCaptions = (array) ($_POST['detail_captions'] ?? []);
+        $detailImages = buildDetailImages($uploadedDetailImages, $detailCaptions);
+        $primaryImages = $uploadedPrimaryImages ?: ['https://picsum.photos/seed/new-product/800/500'];
+        if (!$detailImages) {
+            $detailImages = [[
+                'url' => $primaryImages[0],
+                'caption' => 'Primary view',
+            ]];
+        }
+
         $newProduct = [
             'title' => trim($_POST['title'] ?? 'New Product'),
             'price_bdt' => (float) ($_POST['price_bdt'] ?? 0),
@@ -127,8 +162,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') !== 'login
             'stock_qty' => (int) ($_POST['stock_qty'] ?? 0),
             'short_description' => trim($_POST['short_description'] ?? ''),
             'description_paragraphs' => [trim($_POST['description'] ?? '')],
-            'images' => [$uploadedImage ?: 'https://picsum.photos/seed/new-product/800/500'],
-            'detail_images' => [['url' => ($uploadedImage ?: 'https://picsum.photos/seed/new-product/700/450'), 'caption' => 'Primary view']],
+            'images' => $primaryImages,
+            'detail_images' => $detailImages,
             'variations' => [
                 'colors' => array_values(array_filter(array_map('trim', explode(',', (string) ($_POST['colors'] ?? ''))))),
                 'sizes' => array_values(array_filter(array_map('trim', explode(',', (string) ($_POST['sizes'] ?? ''))))),
@@ -143,8 +178,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') !== 'login
         $id = (int) ($_POST['id'] ?? 0);
         $existing = findProductById($id);
         if ($existing) {
-            $uploadedImage = uploadProductImage('product_image');
-            $image = $uploadedImage ?: (string) (($existing['images'][0] ?? 'https://picsum.photos/seed/new-product/800/500'));
+            $uploadedPrimaryImages = uploadProductImages('product_images');
+            $images = $uploadedPrimaryImages ?: (array) ($existing['images'] ?? []);
+            if (!$images) {
+                $images = ['https://picsum.photos/seed/new-product/800/500'];
+            }
+
+            $existingDetailUrls = (array) ($_POST['existing_detail_urls'] ?? []);
+            $existingDetailCaptions = (array) ($_POST['existing_detail_captions'] ?? []);
+            $keptDetailImages = [];
+            foreach ($existingDetailUrls as $index => $url) {
+                $cleanUrl = trim((string) $url);
+                if ($cleanUrl === '') {
+                    continue;
+                }
+                $keptDetailImages[] = [
+                    'url' => $cleanUrl,
+                    'caption' => trim((string) ($existingDetailCaptions[$index] ?? '')) ?: 'Product detail',
+                ];
+            }
+
+            $uploadedDetailImages = uploadProductImages('detail_images');
+            $detailCaptions = (array) ($_POST['detail_captions'] ?? []);
+            $newDetailImages = buildDetailImages($uploadedDetailImages, $detailCaptions);
+            $detailImages = $newDetailImages ?: ($keptDetailImages ?: (array) ($existing['detail_images'] ?? []));
+            if (!$detailImages) {
+                $detailImages = [['url' => $images[0], 'caption' => 'Primary view']];
+            }
+
             updateProduct($id, [
                 'title' => trim($_POST['title'] ?? $existing['title']),
                 'price_bdt' => (float) ($_POST['price_bdt'] ?? $existing['price_bdt']),
@@ -153,8 +214,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && ($_POST['action'] ?? '') !== 'login
                 'stock_qty' => (int) ($_POST['stock_qty'] ?? ($existing['stock_qty'] ?? 0)),
                 'short_description' => trim($_POST['short_description'] ?? $existing['short_description']),
                 'description_paragraphs' => [trim($_POST['description'] ?? (($existing['description_paragraphs'][0] ?? '')))],
-                'images' => [$image],
-                'detail_images' => [['url' => $image, 'caption' => 'Primary view']],
+                'images' => $images,
+                'detail_images' => $detailImages,
                 'variations' => [
                     'colors' => array_values(array_filter(array_map('trim', explode(',', (string) ($_POST['colors'] ?? implode(', ', $existing['variations']['colors'] ?? [])))))),
                     'sizes' => array_values(array_filter(array_map('trim', explode(',', (string) ($_POST['sizes'] ?? implode(', ', $existing['variations']['sizes'] ?? [])))))),
@@ -248,7 +309,8 @@ require_once __DIR__ . '/includes/header.php';
                     <input type="hidden" name="action" value="add_product">
                     <div class="grid two-col">
                         <div class="form-group"><label>Title</label><input name="title" required></div>
-                        <div class="form-group"><label>Product Image Upload</label><input name="product_image" type="file" accept="image/*"></div>
+                        <div class="form-group"><label>Primary Product Images</label><input name="product_images[]" type="file" accept="image/*" multiple></div>
+                        <div class="form-group"><label>Detailed Product Images</label><input name="detail_images[]" type="file" accept="image/*" multiple></div>
                         <div class="form-group"><label>Price (BDT)</label><input name="price_bdt" type="number" step="0.01" required></div>
                         <div class="form-group"><label>Offer Price (BDT)</label><input name="offer_price_bdt" type="number" step="0.01"></div>
                         <div class="form-group"><label>Cost (BDT)</label><input name="cost_bdt" type="number" step="0.01" required></div>
@@ -258,6 +320,11 @@ require_once __DIR__ . '/includes/header.php';
                     </div>
                     <div class="form-group"><label>Short Description</label><textarea name="short_description" required></textarea></div>
                     <div class="form-group"><label>Description</label><textarea name="description"></textarea></div>
+                    <div class="grid three-col">
+                        <div class="form-group"><label>Detail Caption 1</label><input name="detail_captions[]" placeholder="Close-up view"></div>
+                        <div class="form-group"><label>Detail Caption 2</label><input name="detail_captions[]" placeholder="Material quality"></div>
+                        <div class="form-group"><label>Detail Caption 3</label><input name="detail_captions[]" placeholder="Packaging / usage"></div>
+                    </div>
                     <button class="btn" type="submit">Add Product</button>
                 </form>
             </div>
@@ -278,7 +345,8 @@ require_once __DIR__ . '/includes/header.php';
                                     <input type="hidden" name="id" value="<?php echo (int) $product['id']; ?>">
                                     <div class="grid two-col">
                                         <div class="form-group"><label>Title</label><input name="title" value="<?php echo htmlspecialchars($product['title']); ?>" required></div>
-                                        <div class="form-group"><label>Image Upload</label><input name="product_image" type="file" accept="image/*"></div>
+                                        <div class="form-group"><label>Primary Product Images</label><input name="product_images[]" type="file" accept="image/*" multiple></div>
+                                        <div class="form-group"><label>Add New Detail Images</label><input name="detail_images[]" type="file" accept="image/*" multiple></div>
                                         <div class="form-group"><label>Price</label><input name="price_bdt" type="number" step="0.01" value="<?php echo (float) $product['price_bdt']; ?>" required></div>
                                         <div class="form-group"><label>Offer Price</label><input name="offer_price_bdt" type="number" step="0.01" value="<?php echo (float) ($product['offer_price_bdt'] ?? 0); ?>"></div>
                                         <div class="form-group"><label>Cost</label><input name="cost_bdt" type="number" step="0.01" value="<?php echo (float) $product['cost_bdt']; ?>" required></div>
@@ -288,6 +356,22 @@ require_once __DIR__ . '/includes/header.php';
                                     </div>
                                     <div class="form-group"><label>Short Description</label><textarea name="short_description" required><?php echo htmlspecialchars($product['short_description'] ?? ''); ?></textarea></div>
                                     <div class="form-group"><label>Description</label><textarea name="description"><?php echo htmlspecialchars($product['description_paragraphs'][0] ?? ''); ?></textarea></div>
+                                    <?php if (!empty($product['detail_images']) && is_array($product['detail_images'])): ?>
+                                        <div class="grid two-col">
+                                            <?php foreach ($product['detail_images'] as $detail): ?>
+                                                <div class="form-group">
+                                                    <label>Existing Detail Caption</label>
+                                                    <input type="hidden" name="existing_detail_urls[]" value="<?php echo htmlspecialchars((string) ($detail['url'] ?? '')); ?>">
+                                                    <input name="existing_detail_captions[]" value="<?php echo htmlspecialchars((string) ($detail['caption'] ?? '')); ?>">
+                                                </div>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    <?php endif; ?>
+                                    <div class="grid three-col">
+                                        <div class="form-group"><label>New Detail Caption 1</label><input name="detail_captions[]"></div>
+                                        <div class="form-group"><label>New Detail Caption 2</label><input name="detail_captions[]"></div>
+                                        <div class="form-group"><label>New Detail Caption 3</label><input name="detail_captions[]"></div>
+                                    </div>
                                     <button class="btn" type="submit">Save Changes</button>
                                 </form>
                             </details>

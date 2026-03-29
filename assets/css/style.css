@@ -1,13 +1,13 @@
 :root {
-    --primary: #38a169;
-    --primary-dark: #2f855a;
-    --secondary: #effaf3;
-    --accent: #68d391;
+    --primary: #f59e0b;
+    --primary-dark: #d97706;
+    --secondary: #fff4e6;
+    --accent: #fb923c;
     --text: #2c2a28;
     --muted: #7c6f66;
-    --bg: #f3fff7;
+    --bg: #fff8f0;
     --card-bg: #ffffff;
-    --border: #cdeed9;
+    --border: #ffe0c2;
 }
 
 * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
@@ -81,9 +81,9 @@ body {
     justify-content: center;
     gap: 0.2rem;
 }
-.btn { background: var(--primary); color: #fff; }
+.btn { background: linear-gradient(135deg, #f59e0b 0%, #fb923c 100%); color: #fff; }
 .btn:hover { background: var(--primary-dark); }
-.icon-btn { background: #e9fbef; color: #1f7a4f; }
+.icon-btn { background: #fff2e2; color: #b45309; }
 .buy-btn { background: var(--accent); color: #fff; }
 
 .shop-section { background: rgba(255,255,255,0.8); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
@@ -681,6 +681,46 @@ textarea { min-height: 84px; }
 .compact-checkout select {
     padding: 0.42rem 0.55rem;
     font-size: 0.85rem;
+}
+
+.checkout-card {
+    border: 1px solid #ffd7ad;
+}
+
+.checkout-form {
+    background: #fffaf5;
+}
+
+.checkout-form label {
+    font-weight: 600;
+    color: #7c4a13;
+}
+
+.checkout-section-title {
+    margin: 0.5rem 0 0.6rem;
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: #b45309;
+}
+
+.checkout-form input,
+.checkout-form select,
+.checkout-form textarea {
+    border: 1px solid #f6c994;
+    background: #fff;
+    border-radius: 10px;
+    padding: 0.58rem 0.65rem;
+}
+
+.checkout-submit-btn {
+    width: 100%;
+    margin-top: 0.35rem;
+    font-size: 0.95rem;
+    letter-spacing: 0.2px;
+}
+
+.checkout-summary-card {
+    background: linear-gradient(180deg, #fffdf9 0%, #fff5e9 100%);
 }
 
 @media (max-width: 860px) {

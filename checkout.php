@@ -14,16 +14,18 @@ require_once __DIR__ . '/includes/header.php';
 
 <section class="section">
     <div class="container checkout-layout compact-checkout">
-        <article class="card">
-            <h2>Checkout</h2>
-            <p class="muted">Confirm your delivery details and place order quickly.</p>
-            <form id="checkout-form">
+        <article class="card checkout-card">
+            <h2>Secure Checkout</h2>
+            <p class="muted">Please provide delivery details to complete your order.</p>
+            <form id="checkout-form" class="checkout-form">
+                <div class="checkout-section-title">Customer Information</div>
                 <div class="grid two-col">
                     <div class="form-group"><label>Name *</label><input name="name" required></div>
                     <div class="form-group"><label>Phone *</label><input name="phone" required></div>
                 </div>
                 <div class="form-group"><label>Address *</label><textarea name="address" required></textarea></div>
                 <div class="form-group"><label>Email (optional)</label><input name="email" type="email"></div>
+                <div class="checkout-section-title">Order Preferences</div>
                 <div class="grid two-col">
                     <div class="form-group"><label>Size</label><select name="size" id="checkout-size"><option value="">Select size</option></select></div>
                     <div class="form-group"><label>Color</label><select name="color" id="checkout-color"><option value="">Select color</option></select></div>
@@ -36,12 +38,12 @@ require_once __DIR__ . '/includes/header.php';
                     </select>
                 </div>
                 <div class="form-group"><label>Notes</label><textarea name="notes"></textarea></div>
-                <button class="btn" type="submit">Submit Order</button>
+                <button class="btn checkout-submit-btn" type="submit">Place Order</button>
                 <p id="checkout-msg" class="notice" style="display:none;"></p>
             </form>
         </article>
 
-        <article class="card">
+        <article class="card checkout-summary-card">
             <h3><i class="fa-solid fa-receipt"></i> Order Summary</h3>
             <div id="checkout-summary" class="order-summary muted">Loading cart...</div>
             <p class="muted">Free shipping on order over ৳<?php echo (int) ($shipping['free_shipping_threshold_bdt'] ?? 1500); ?></p>
