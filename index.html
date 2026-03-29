@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>E-commerce Admin + Checkout</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="page-header">
+        <h1>Store Manager</h1>
+        <p>Upload rich product media and keep checkout friction-free.</p>
+      </header>
+
+      <section class="card">
+        <h2>Admin · Add Product</h2>
+        <form id="productForm" class="form-grid" novalidate>
+          <label>
+            Product Name
+            <input type="text" name="productName" placeholder="Soft Cotton Hoodie" required />
+          </label>
+
+          <label>
+            Price
+            <input type="number" name="price" min="0" step="0.01" placeholder="49.99" required />
+          </label>
+
+          <label class="full-width">
+            Main Product Images (multiple)
+            <input type="file" id="productImages" name="productImages" accept="image/*" multiple required />
+            <small>Upload multiple gallery images for product listing.</small>
+          </label>
+
+          <div class="full-width">
+            <div class="section-title-row">
+              <h3>Detailed Product Images + Caption</h3>
+              <button type="button" id="addDetailBtn" class="btn btn-secondary">+ Add Detail Row</button>
+            </div>
+            <div id="detailRows" class="detail-rows">
+              <div class="detail-row">
+                <label>
+                  Detail Image
+                  <input type="file" name="detailImage[]" accept="image/*" required />
+                </label>
+                <label class="detail-caption">
+                  Caption
+                  <input
+                    type="text"
+                    name="detailCaption[]"
+                    placeholder="Close-up of fabric texture"
+                    maxlength="120"
+                    required
+                  />
+                </label>
+                <button type="button" class="btn btn-ghost remove-row" aria-label="Remove detail row">Remove</button>
+              </div>
+            </div>
+          </div>
+
+          <button class="btn btn-primary full-width" type="submit">Save Product</button>
+        </form>
+        <div id="productFeedback" class="feedback" role="status" aria-live="polite"></div>
+      </section>
+
+      <section class="card">
+        <h2>Checkout</h2>
+        <form id="checkoutForm" class="form-grid checkout-grid" novalidate>
+          <label>
+            Full Name
+            <input type="text" name="fullName" autocomplete="name" required />
+          </label>
+
+          <label>
+            Email Address
+            <input type="email" name="email" autocomplete="email" required />
+          </label>
+
+          <label class="full-width">
+            Street Address
+            <input type="text" name="address" autocomplete="street-address" required />
+          </label>
+
+          <label>
+            City
+            <input type="text" name="city" autocomplete="address-level2" required />
+          </label>
+
+          <label>
+            Postal Code
+            <input type="text" name="zip" autocomplete="postal-code" required />
+          </label>
+
+          <label>
+            Card Number
+            <input type="text" name="card" inputmode="numeric" placeholder="1234 5678 9012 3456" required />
+          </label>
+
+          <label>
+            Expiry
+            <input type="text" name="expiry" placeholder="MM/YY" required />
+          </label>
+
+          <label>
+            CVV
+            <input type="password" name="cvv" inputmode="numeric" maxlength="4" required />
+          </label>
+
+          <button type="submit" class="btn btn-primary full-width">Complete Order</button>
+        </form>
+        <div id="checkoutFeedback" class="feedback" role="status" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
